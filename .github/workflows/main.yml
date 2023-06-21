@@ -34,7 +34,7 @@ jobs:
           for i in "${!STUDENT_ARRAY[@]}"; do
             echo ${STUDENT_ARRAY[$index]}
             echo ${REAL_ARRAY[i]}
-            if [ ${STUDENT_ARRAY[$index]} -eq ${REAL_ARRAY[i]} ]; then
+            if [ "${STUDENT_ARRAY[$index]}" == "${REAL_ARRAY[i]}" ]; then
               echo "number $i correct"
               total=$((total+1))
               correct=$((correct+1))
@@ -43,4 +43,6 @@ jobs:
               total=$((total+1))
             fi
           done
-          echo "🎉Total Score: $total🎉"
+          echo "========================================"
+          echo "🎉Total Score: $correct out of $total🎉"
+          echo "========================================"
