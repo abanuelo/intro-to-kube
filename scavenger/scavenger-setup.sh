@@ -4,4 +4,5 @@ if [ ! -f /usr/local/bin/minikube ]; then
 fi
 minikube start
 kubectl create namespace scavenger
-kubectl create -f ./scavenger/k8s/ -n scavenger
+kubectl config set-context --current --namespace=scavenger
+kubectl create -f ./scavenger/k8s/
