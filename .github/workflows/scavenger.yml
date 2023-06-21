@@ -1,4 +1,4 @@
-name: Grader
+name: Scavenger Hunt
 on:
   push:
     branches:
@@ -32,17 +32,15 @@ jobs:
           correct=0
 
           for i in "${!STUDENT_ARRAY[@]}"; do
-            echo ${STUDENT_ARRAY[$index]}
-            echo ${REAL_ARRAY[i]}
             if [ "${STUDENT_ARRAY[$index]}" == "${REAL_ARRAY[i]}" ]; then
-              echo "number $i correct"
+              echo "✅ problem $i"
               total=$((total+1))
               correct=$((correct+1))
             else
-              echo "number $i incorrect"
+              echo "❌ problem $i"
               total=$((total+1))
             fi
           done
           echo "========================================"
-          echo "🎉Total Score: $correct out of $total🎉"
+          echo "🎉 Total Score: $correct out of $total 🎉"
           echo "========================================"
