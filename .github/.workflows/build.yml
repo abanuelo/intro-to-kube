@@ -1,0 +1,44 @@
+name: Grader
+on:
+  push:
+    branches:
+      - "scavenger-**"
+
+jobs:
+  scavenger:
+    name: Scavenger Hunt 🕵️‍♂️🔍
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Checkout solution
+        uses: actions/checkout@v3
+        with:
+          repository: abanuelo/intro-to-kube-solution
+          token: ${{ secrets.GH_PAT }}
+          path: solution
+
+      - name: Check results
+        run: |
+          echo "Current working directory"
+          ls -la
+          STUDENT_SOLUTION=`cat scavenger.json | jq ".[]" | jq ".[]" | tr -d '"' | tr "\n" ";" | tr " " "-"`
+          REAL_SOLUTION=`cat scavenger.json | jq ".[]" | jq ".[]" | tr -d '"' | tr "\n" ";" | tr " " "-"`
+          STUDENT_ARRAY=($(echo $STUDENT_SOLUTION | tr ";" "\n"))
+          REAL_ARRAY=($(echo $REAL_SOLUTION | tr ";" "\n"))
+
+          total=0
+          correct=0
+
+          for i in "${!STUDENT_ARRAY[@]}"; do
+            if [ ${array[$index]} -eq ${REAL_ARRAY[i]} ]; then
+              echo "number $i correct"
+              total=$((total+1))
+              correct=$((correct+1))
+            else
+              echo "number $i incorrect"
+              total=$((total+1))
+            fi
+          done
+          echo "Total Score: $total"
