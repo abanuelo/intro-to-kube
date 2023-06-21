@@ -2,7 +2,7 @@ name: Grader
 on:
   push:
     branches:
-      - "scavenger*"
+      - "scavenger-**"
 
 jobs:
   scavenger:
@@ -23,8 +23,8 @@ jobs:
         run: |
           echo "Current working directory"
           ls -la
-          STUDENT_SOLUTION=`cat scavenger.json | jq ".[]" | jq ".[]" | tr -d '"' | tr "\n" ";" | tr " " "-"`
-          REAL_SOLUTION=`cat scavenger.json | jq ".[]" | jq ".[]" | tr -d '"' | tr "\n" ";" | tr " " "-"`
+          STUDENT_SOLUTION=`cat ./scavenger/scavenger.json | jq ".[]" | jq ".[]" | tr -d '"' | tr "\n" ";" | tr " " "-"`
+          REAL_SOLUTION=`cat ./solution/scavenger.json | jq ".[]" | jq ".[]" | tr -d '"' | tr "\n" ";" | tr " " "-"`
           STUDENT_ARRAY=($(echo $STUDENT_SOLUTION | tr ";" "\n"))
           REAL_ARRAY=($(echo $REAL_SOLUTION | tr ";" "\n"))
 
