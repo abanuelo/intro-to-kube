@@ -14,7 +14,7 @@ Create K8s resources by running
 
 Add add your answers to `scavenger.json`
 
-We have GitHub Actions configured to report your score to our scavenger hunt. Just create your own branch prefixed with `scavenger-` and push to it. Then you can see your results here.
+We have GitHub Actions configured to report your score to our scavenger hunt. Just create your own branch prefixed with `scavenger-` and push to it. [Then you can see your results here](https://github.com/abanuelo/intro-to-kube/actions/workflows/scavenger.yml).
 
 ## Mark I - new beginngs
 
