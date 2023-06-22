@@ -23,14 +23,14 @@ We have GitHub Actions configured to report your score to our scavenger hunt. Ju
 2. How many nodes do we have?
 3. How many failing pods are there?
 4. How many deployments do we have?
-5. For the deployments you discovered, how many ReplicaSets are there?
+5. For the deployments you discovered, how many ReplicaSets are there in total?
 
 ## Mark II - not so new beginnings
 
-6. Locate a postgres pod within our cluster. Why is it failing? Please copy and paste the specific `kubectl` log you find.
-7. Locate a failed nginx pod within our cluster. Why is it failing? Please copy and paste the specific `kubectl` log you find.
+6. Locate a postgres pod within our cluster. Why is it failing? Please provide the variable name(s) that is missing.
+7. Locate a failed nginx pod within our cluster. Why is it failing? Please copy and paste the specific `kubectl` log you find. Please escape `"` with `\"`.
 
 ## Mark III - fixing our bugs
 
-8. For the postgres pod, can you fix the `./k8s/postgres-pod.yml` file to spin up the image correctly. Add the lines of code you added/corrected.
-9. For the failed nginx pod, can you fix the `./k8s/nignx-pod.yml` file to spin up the image correctly. Add the lines of code you added/corrected.
+8. For the postgres pod, can you fix the `./k8s/postgres-pod.yml` file to spin up the image correctly? Please add the environment variable needed with value "supersecret". Added your lines of code.
+9. For the failed nginx pod, can you fix the `./k8s/nignx-pod.yml` file to spin up the image correctly. Add the lines of code you added/corrected and please escape `"` with `\"`.

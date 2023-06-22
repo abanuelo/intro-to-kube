@@ -5,4 +5,4 @@ fi
 minikube start
 kubectl create namespace scavenger
 kubectl config set-context --current --namespace=scavenger
-kubectl create -f ./scavenger/k8s/
+kubectl create -f ./k8s/
