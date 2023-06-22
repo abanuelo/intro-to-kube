@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+# unique name for deployment
+metadata:
+  name: nginx
+spec:
+  # selector finds its Pods
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 3 # defaults to three ReplicaSets
+  template:
+    metadata:
+      # content needs top match matchLabels or K8s rejects Deployment
+      labels:
+        app: nginx
+    spec:
+      # TODO:
+      # - Add nginx container spec
+      # - Add cpu resource request limit
