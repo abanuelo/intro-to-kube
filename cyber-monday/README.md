@@ -16,7 +16,8 @@ Get ready to configure this epic setup, and let's make this Cyber Monday the stu
 Start your minikube and let the games begin!
 
 ```
-minikube start
+ minikube start --memory 2048 --cpus 2 --vm-driver=docker
+ minikube addons enable metrics-server
 ```
 
 0. Lucky for you, some of your teammates, have already started writing a Deployment YAML called `nginx-deploy.yml`. Please refer to [K8s Deployment documentation](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) as needed. Complete the YAML file to
@@ -24,6 +25,8 @@ minikube start
    > a. Spin up an nginx container
 
    > b. Set CPU resource request to 100m
+
+   > c. Add CPU resource limit to 100m and memory to 64Mi
 
 1. Once you feel confident in your code run the snippet below. It will create your Deployment in your default namespace. By creating a branch prefixed with `cyber-*` and pushing it up, we can check if your deployment is giving the correct information we need here.
 
@@ -46,6 +49,15 @@ kubectl apply -f nginx-deploy.yml
 4. Let's test see the results of your autoscaling by increasing the load. Run the snippet of code below and visualize load scale the pods by running `kubectl get hpa nginx --watch`. If you see pods scale up as a result, then congratulations looks like your job is done!
 
 ```
-kubectl run -i --tty load-generator --rm --image=nginx --restart=Never -- /bin/sh -c "while sleep 0.01; do echo 'hello world'; done"
-
+# First find a pod IP to hit by running
+kubectl get pods -o wide
+# Replace the IP in the curl command
+kubectl run -i --tty load-generator --rm --image=nginx --restart=Never -- /bin/sh -c "while sleep 0.001; do curl -v http://10.244.0.21; done"
+# In another terminal watch CPU utilization change
+kubectl get hpa nginx --watch
+# We may need to delete this pod to simulate this since we don't have a service
 ```
+
+## Challenge
+
+TODO: Add a service to this project

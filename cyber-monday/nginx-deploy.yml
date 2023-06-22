@@ -17,4 +17,5 @@ spec:
     spec:
       # TODO:
       # - Add nginx container spec
-      # - Add cpu resource request limit
+      # - Add CPU resource request limit to 100m
+      # - Add CPU resource limit to 100m and memory to 64Mi
