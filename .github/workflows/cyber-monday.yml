@@ -63,7 +63,7 @@ jobs:
       - name: Check if hpa sets min replicas to 1 and max replicas to 20
         run: |
           MIN_REPLICAS=`kubectl describe hpa nginx | grep 'Min replicas' | grep '1' -o`
-          MAX_REPLICAS=`kubectl describe hpa nginx | grep 'Max replicas' | grep '1' -o`
+          MAX_REPLICAS=`kubectl describe hpa nginx | grep 'Max replicas' | grep '20' -o`
           if [ "$MIN_REPLICAS" == "1" ]; then
             echo "✅ Min replicas for hpa is correct"
           else
