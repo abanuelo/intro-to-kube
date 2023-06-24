@@ -18,7 +18,7 @@ jobs:
       - name: Apply the kubectl config objects
         run: |
           kubectl apply -f ./cyber-monday/nginx-deploy.yml
-          kubectl apply -f ./cyber-monday/nginx-svc.yml
+          kubectl apply -f ./cyber-monday/nginx-scaler.yml
       - name: Check if correct container image applied to deployment
         run: |
           IMAGE_NAME=`kubectl describe deployment nginx | grep 'Pod Template' -A 10 | grep 'Image:' | grep 'nginx' -o`
