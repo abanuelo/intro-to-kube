@@ -1,0 +1,85 @@
+name: Cyber Monday
+on:
+  push:
+    branches:
+      - "cyber-**"
+
+jobs:
+  scavenger:
+    name: Cyber Monday 💻💥
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@master
+
+      - name: Apply the kubectl config objects
+        run: |
+          kubectl apply -f ./cyber-monday/nginx-deploy.yml
+          kubectl apply -f ./cyber-monday/nginx-svc.yml
+      - name: Check if correct container image applied to deployment
+        run: |
+          IMAGE_NAME=`kubectl describe deployment nginx | grep 'Pod Template' -A 10 | grep 'Image:' | grep 'nginx' -o`
+          if [ "$IMAGE_NAME" == "nginx" ]; then
+            echo "✅ Image name for deployment is correct"
+          else
+            echo "❌ Image name for deployment is incorrect"
+          fi
+      - name: Check if correct CPU resource request applied to deployment
+        run: |
+          CPU_REQUEST=`kubectl describe deployment nginx | grep 'Requests' -A 3 | grep 'cpu' | grep '100m' -o`
+          if [ "$CPU_REQUEST" == "100m" ]; then
+            echo "✅ CPU request for deployment is correct"
+          else
+            echo "❌ CPU request for deployment is incorrect"
+          fi
+
+      - name: Check if correct CPU resource limit and memory applied
+        run: |
+          LIMIT_CPU=`kubectl describe deployment nginx | grep 'Limits' -A 3 | grep 'cpu' | grep '100m' -o`
+          LIMIT_MEM=`kubectl describe deployment nginx | grep 'Limits' -A 3 | grep 'memory' | grep '64Mi' -o`
+          if [ "$LIMIT_CPU" == "100m" ]; then
+            echo "✅ CPU limit for deployment is correct"
+          else
+            echo "❌ CPU limit for deployment is incorrect"
+          fi
+          if [ "$LIMIT_MEM" == "64Mi" ]; then
+            echo "✅ memory limit for deployment is correct"
+          else
+            echo "❌ memory limit for deployment is incorrect"
+          fi
+
+      - name: Check if hpa sets target to nginx deployment
+        run: |
+          TARGET=`kubectl describe hpa nginx | grep 'Reference' | grep 'Deployment/nginx' -o`
+          if [ "$TARGET" == "Deployment/nginx" ]; then
+            echo "✅ Target for hpa is correct"
+          else
+            echo "❌ Target for hpa is incorrect"
+          fi
+
+      - name: Check if hpa sets min replicas to 1 and max replicas to 20
+        run: |
+          MIN_REPLICAS=`kubectl describe hpa nginx | grep 'Min replicas' | grep '1' -o`
+          MAX_REPLICAS=`kubectl describe hpa nginx | grep 'Max replicas' | grep '1' -o`
+          if [ "$MIN_REPLICAS" == "1" ]; then
+            echo "✅ Min replicas for hpa is correct"
+          else
+            echo "❌ Min replicas for hpa is incorrect"
+          fi
+          if [ "$MAX_REPLICAS" == "20" ]; then
+            echo "✅ Max replicas for hpa is correct"
+          else
+            echo "❌ Max replicas for hpa is incorrect"
+          fi
+
+      - name: Check if hpa sets target CPU utilization to 50%
+        run: |
+          TARGET_CPU=`kubectl describe hpa nginx | grep 'Metrics' -A 1 | grep '/ 50%' | grep '50%' -o`
+          if [ "$TARGET_CPU" == "50%" ]; then
+            echo "✅ Target CPU utilization for hpa is correct"
+          else
+            echo "❌ Target CPU utilization for hpa is incorrect"
+          fi
