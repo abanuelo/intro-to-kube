@@ -1,0 +1,10 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+# TODO: add podreader as target user
+# note: this is case sensitive
+roleRef:
+# TODO: add target role to pod-reader
