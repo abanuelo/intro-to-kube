@@ -61,8 +61,29 @@ psql --host=$(minikube ip) \
      --dbname=postgres
 ```
 
-Let's create a table using the following command:
+Let's create a table using the following command. Let's also try to INSERT some data into the table
 
 ```
+CREATE TABLE roles(
+   role_id serial PRIMARY KEY,
+   role_name VARCHAR (255) UNIQUE NOT NULL
+);
+INSERT INTO PUBLIC.ROLES VALUES (1, 'hi');
+```
+
+## Troubleshooting tips
+
+0. The `psql` CLI is not installed by default in the database. We need to run the following command to get it installed:
 
 ```
+sudo apt-get install wget ca-certificates
+sudo apt install postgresql postgresql-contrib
+sudo service postgresql stop #just in case it is running locally to disable this
+## helpful to get the status of some of the service
+service --status-all
+```
+
+1. If we want to access to service we may need to alter the password of the postgres DB. So what we do is that once the StatefulSet is up we want to ensure that we run the following command:
+   `kubectl exec -it postgres-0 -- psql -U postgres`. Then we run the following `ALTER` command to change:
+   `ALTER USER postgres WITH PASSWORD 'postgres';`
+2. Then we can run the following command above with the corrected password to get the connection working as needed.
