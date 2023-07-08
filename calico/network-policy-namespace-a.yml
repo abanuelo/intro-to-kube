@@ -1,0 +1,9 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: network-policy-for-namespace-a
+  namespace: namespace-a
+spec:
+  # TODO:
+  # Define ingress
+  # Define egress
