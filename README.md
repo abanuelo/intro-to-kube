@@ -1,36 +1,29 @@
-# Basic Kubernetes (K8s)
+# Kubernetes: Managing Containers at Scale
+
+## Background
 
 This repo will contain examples to learn:
 
-- Containers
-- K8s workloads
-- Basic services
-- Networking
-- Load balancing
-- Common troubleshooting
-- Metrics and logging
+- Creating shared volume mounts for Databases
+- Creating highly available (HA) websites using Deployments
+- Deploying basic Services to communicate with HA pods
+- Calico Networking for Pod-to-Pod communication
+- Common K8s troubleshooting
+- Basic K8s logging and metrics
+- Role-Based Access Control (RBAC) for cluster/user resource control
 
-## Installing minikube
+We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codespaces](https://github.com/features/codespaces) to explore K8s. To learn how to setup your codespace environment, please reference this document.
 
-[minikube](https://minikube.sigs.k8s.io/docs/) is local Kubernetes, focusing on making it easy to learn and develop for Kubernetes.
+## Outline
 
-You will need:
+- Week 1
 
-a. Docker (or similarly compatible) container or a Virtual Machine environment
+  a. **Scavenger Hunt (Optional)** - helps us explore our minikube environment and how to use the `kubectl` tool.
 
-b. Kubernetes
+  b. **Cyber Monday** - main project focused on exploring Deployments, Horizontal Pod Autoscalers, and Services.
 
-1. Complete step 1. to install the necessary [minikube binary](https://minikube.sigs.k8s.io/docs/start/) for your machine.
-2. Install kubernetes:
+- Week 2 - **Pesky Persistent DB** - explore deploying databases in microservice ecoysystem with the help of StatefulSets and Persistent Volumes
 
-- [Install kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
-- [Install kubectl on macOS](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/)
-- [Install kubectl on Windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
+- Week 3 - **RBAC-to-the-future** - learn about introducing role-based access control on cluster resources to help scale users interacting with our clusers
 
-3. [Install Docker Engine](https://docs.docker.com/engine/install/). If you have the GUI option, it is recommended to install Docker Desktop.
-
-## Why minikube?
-
-Unfortunately, there is not an easy way to "containerize" minikube as it is already spun up as a docker container.
-
-Gitpod offers [alternatives](https://www.gitpod.io/docs/configure/workspaces#is-it-possible-to-run-a-kubernetes-cluster-in-a-gitpod-workspace-using-minikube-or-kind-or-other-alternatives) to have a docker-in-docker solution for kubernetes through [K3s](https://k3s.io/), a lightweight version for kubernetes, but image setup takes >30 minutes and is limited to a single node control-plane.
+- Week 4 - **Calico** - learn about the basics of pod-to-pod networking to create finer control of cluster resources.
