@@ -12,7 +12,7 @@ This repo will contain examples to learn:
 - Basic K8s logging and metrics
 - Role-Based Access Control (RBAC) for cluster/user resource control
 
-We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codespaces](https://github.com/features/codespaces) to explore K8s. To learn how to setup your codespace environment, please reference this document.
+We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codespaces](https://github.com/features/codespaces) to explore K8s. To learn how to setup your codespace environment, [please reference this document](https://corise.com/course/kubernetes-managing-containers-at-scale/v2/module/codespace-setup).
 
 ## Outline
 
