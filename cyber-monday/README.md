@@ -24,6 +24,7 @@ Start your minikube and let the games begin!
 ```
  minikube start --memory 2048 --cpus 2 --vm-driver=docker
  minikube addons enable metrics-server
+ cd ./cyber-monday
 ```
 
 ## Testing

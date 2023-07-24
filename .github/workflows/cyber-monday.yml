@@ -83,3 +83,14 @@ jobs:
           else
             echo "❌ Target CPU utilization for hpa is incorrect"
           fi
+
+      - name: CHALLENGE - Check if service can connect to pod in deployment
+      run: |
+        kubectl apply -f ./cyber-monday/nginx-service.yml
+        curl $(minikube service nginx --url)
+        RESULT=`echo $?`
+        if [ "$RESULT" == "0" ]; then
+          echo "✅ Service is correct"
+        else
+          echo "❌ Service is incorrect"
+        fi
