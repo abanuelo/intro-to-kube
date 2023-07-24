@@ -60,4 +60,8 @@ kubectl get hpa nginx --watch
 
 ## Challenge
 
-TODO: Add a service to this project
+If the above steps have been completed, we encourage you to do some more thorough testing by adding a service. Note that in step 4 above, we needed to find the specific IP of a pod in order to determine if our HPA was working. Instead, we can add a [K8s Service](https://kubernetes.io/docs/concepts/services-networking/service/) that talks to our Deployment. By adding a service we can communicate to any given pod in our Deployment. Work on the `nginx-service.yml` file to add a service. To test your changes run the following snippet of code below:
+
+```
+TBD
+```
