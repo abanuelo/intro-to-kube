@@ -92,6 +92,8 @@ jobs:
 
       - name: CHALLENGE - Check if service can connect to pod in deployment
         run: |
+          kubectl apply -f ./cyber-monday/nginx-deploy.yml
+          sleep 10
           kubectl apply -f ./cyber-monday/nginx-service.yml
           curl $(minikube service nginx --url)
           RESULT=`echo $?`
