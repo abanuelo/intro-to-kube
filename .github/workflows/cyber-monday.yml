@@ -14,6 +14,12 @@ jobs:
 
       - name: Start minikube
         uses: medyagh/setup-minikube@master
+        id: minikube
+        with:
+          driver: docker
+          memory: 2048
+          cpus: 2
+          addons: ingress, metrics-server
 
       - name: Apply the kubectl config objects
         run: |
