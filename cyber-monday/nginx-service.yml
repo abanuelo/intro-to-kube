@@ -7,6 +7,7 @@ metadata:
     app: nginx
     role: service
 spec:
+  type: NodePort
   # TODO:
   # Add a selector to service for our deployment
   # Add a port to expose our service with target
