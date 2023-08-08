@@ -24,7 +24,7 @@ Start your minikube and let the games begin!
 ```
  minikube start --memory 2048 --cpus 2 --vm-driver=docker
  minikube addons enable metrics-server
- cd ./cyber-monday
+ cd cyber-monday
 ```
 
 ## Testing
@@ -80,10 +80,13 @@ git push -u origin cyber-<github-username>
    ```
    # First find a pod IP to hit by running
    kubectl get pods -o wide
+
    # Replace the IP in the curl command
-   kubectl run -i --tty load-generator --rm --image=nginx --restart=Never -- /bin/sh -c "while sleep 0.001; do curl -v http://10.244.0.21; done"
+   kubectl run -i --tty load-generator --rm --image=nginx --restart=Never -- /bin/sh -c "while sleep 0.001; do curl -v <ENTER POD IP>; done"
+
    # In another terminal watch CPU utilization change
    kubectl get hpa nginx --watch
+
    # We may need to delete this pod to simulate this since we don't have a service
    ```
 
@@ -94,8 +97,10 @@ If the above steps have been completed, we encourage you to do some more thoroug
 ```
 # apply the service
 kubectl apply -f nginx-service.yml
+
 # minikube will export the service url, find yours by running
 minikube service nginx --url
+
 # Use that url to run this curl command:
 curl -v $(minikube service nginx --url)
 ```

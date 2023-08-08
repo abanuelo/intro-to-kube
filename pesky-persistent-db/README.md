@@ -13,7 +13,7 @@ This is where a newest protoge, comes into existence. Our engineer's persistence
 Start up your `minikube` environment by running:
 
 ```
-cd ./pesky-persistent-db/
+cd pesky-persistent-db
 minikube start
 ```
 
