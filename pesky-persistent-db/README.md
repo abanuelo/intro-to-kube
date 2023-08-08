@@ -35,7 +35,7 @@ git push -u origin persistent-<github-username>
 
 ## Main Project
 
-0. Luckily we have some resources: `postgres-service.yml`. The [Service](https://kubernetes.io/docs/concepts/services-networking/service/) was intended to provide a Domain Name System (DNS) to be able to connect with the Pods attached to the Deployment. Run the lines of code to create the Service and Secret
+0. Luckily we have some resources: `postgres-service.yml`. The [Service](https://kubernetes.io/docs/concepts/services-networking/service/) was intended to provide a Domain Name System (DNS) to be able to connect with the Pods attached to the Deployment. Run the lines of code to create the Service
 
    ```
    kubectl apply -f postgres-service.yml
