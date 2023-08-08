@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:10.1
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432 # Exposes container port
+          # TODO:
+          # a. Add a config map reference to your secrets
+          # b. Add the following volumeMounts:
+          #        mountPath: /var/lib/postgresql/data
+          #        name to be postgredb
+          # c. Add the persistent volume claim from postgres-persistent.yml

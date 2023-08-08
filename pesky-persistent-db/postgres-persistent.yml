@@ -1,20 +1,25 @@
-apiVersion: v1
 kind: PersistentVolume
-metadata:
-  name: postgres
-spec:
-  # TODO
-  # set the accessModes as ReadWriteOnce
-  # set the capacity to 2Gi
-  # set the hostPath to /data/postgres
-  # set the storageClassName to standard
----
 apiVersion: v1
-kind: PersistentVolumeClaim
 metadata:
-  name: postgres
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: postgres
 spec:
-  # TODO
-  # set the accessModes as ReadWriteOnce
-  # set the resource requests storage to 2Gi
-  # point to the Persistent volume name above
+  # TODO: Fill in the persistent volume specifications:
+  # a. storageClassName as manual
+  # b. capacity as 5Gi
+  # c. accessModes as ReadWriteMany
+  # d. hostPath as /mnt/data
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: postgres
+spec:
+  # TODO: Fill in the persistent volume claim specifications:
+  # a. storageClassName as manual
+  # b. accessModes as ReadWriteMany
+  # c. resource requests for storage to be 5Gi

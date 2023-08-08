@@ -1,18 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  # name of our service we can connect to
   name: postgres
   labels:
     app: postgres
-    role: service
 spec:
-  selector:
-    app: postgres
-    role: service
   type: NodePort
   ports:
-    - name: postgres
-      port: 5432
-      targetPort: 5432
-      protocol: TCP
+    - port: 5432
+  selector:
+    app: postgres

@@ -1,0 +1,122 @@
+name: Pesky Persistent DB
+on:
+  push:
+    branches:
+      - "persistent-**"
+
+jobs:
+  scavenger:
+    name: Pesky Persistent DB 💾
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@master
+        id: minikube
+        with:
+          driver: docker
+          memory: 2048
+      - name: Apply the kubectl config objects
+        run: |
+          kubectl apply -f ./pesky-persistent-db/postgres-configmap.yml
+          kubectl apply -f ./pesky-persistent-db/postgres-persistent.yml
+          kubectl apply -f ./pesky-persistent-db/postgres-service.yml
+          kubectl apply -f ./pesky-persistent-db/postgres-deployment.yml
+      # CONFIGMAP CHECKS
+      - name: Check if correct configmap values in place
+        run: |
+          POSTGRES_DB=`kubectl describe configmap postgres-config | grep POSTGRES_DB -A 2 | grep postgresdb`
+          if [ "$POSTGRES_DB" == "postgresdb" ]; then
+            echo "✅ Value for POSTGRES_DB is correct"
+          else
+            echo "❌ Value for POSTGRES_DB is incorrect"
+          fi
+          POSTGRES_PASSWORD=`kubectl describe configmap postgres-config | grep POSTGRES_PASSWORD -A 2 | grep psltest`
+          if [ "$POSTGRES_PASSWORD" == "psltest" ]; then
+            echo "✅ Value for POSTGRES_PASSWORD is correct"
+          else
+            echo "❌ Value for POSTGRES_PASSWORD is incorrect"
+          fi
+          POSTGRES_USER=`kubectl describe configmap postgres-config | grep POSTGRES_USER -A 2 | grep admin`
+          if [ "$POSTGRES_USER" == "admin" ]; then
+            echo "✅ Value for POSTGRES_USER is correct"
+          else
+            echo "❌ Value for POSTGRES_USER is incorrect"
+          fi
+      # PERSISTENT VOLUME CHECKS
+      - name: Check if correct Persistent Volume accessMode applied
+        run: |
+          PV_ACCESS_MODE=`kubectl describe pv postgres | grep "Access Modes" | grep RWX -o`
+          if [ "$PV_ACCESS_MODE" == "RWX" ]; then
+            echo "✅ Access Mode for Persistent Volume is correct"
+          else
+            echo "❌ Access Mode for Persistent Volume is incorrect"
+          fi
+      - name: Check if correct Persistent Volume capacity applied
+        run: |
+          PV_CAPACITY=`kubectl describe pv postgres | grep "Capacity" | grep "5Gi" -o`
+          if [ "$PV_CAPACITY" == "5Gi" ]; then
+            echo "✅ Capacity for Persistent Volume is correct"
+          else
+            echo "❌ Capacity for Persistent Volume is incorrect"
+          fi
+      - name: Check if correct Persistent Volume storageClass applied
+        run: |
+          PV_STORAGE_CLASS=`kubectl describe pv postgres | grep "StorageClass" | grep "manual" -o`
+          if [ "$PV_STORAGE_CLASS" == "manual" ]; then
+            echo "✅ StorageClass for Persistent Volume is correct"
+          else
+            echo "❌ StorageClass for Persistent Volume is incorrect"
+          fi
+      - name: Check if correct Persistent Volume hostPath applied
+        run: |
+          PV_HOST_PATH=`kubectl describe pv postgres | grep "Path" | grep "/mnt/data" -o`
+          if [ "$PV_HOST_PATH" == "/mnt/data" ]; then
+            echo "✅ Host Path for Persistent Volume is correct"
+          else
+            echo "❌ Host Path for Persistent Volume is incorrect"
+          fi
+      # PERSISTENT VOLUME CLAIM CHECKS
+      - name: Check if correct Persistent Volume Claim accessModes applied
+        run: |
+          PVC_ACCESS_MODE=`kubectl describe pvc postgres | grep "Access Modes" | grep "RWX" -o`
+          if [ "$PVC_ACCESS_MODE" == "RWX" ]; then
+            echo "✅ Access Mode for Persistent Volume Claim is correct"
+          else
+            echo "❌ Access Mode for Persistent Volume Claim is incorrect"
+          fi
+      - name: Check if correct Persistent Volume Claim capacity applied
+        run: |
+          PVC_CAPACITY=`kubectl describe pvc postgres | grep "Capacity" | grep "5Gi" -o`
+          if [ "$PVC_CAPACITY" == "5Gi" ]; then
+            echo "✅ Capacity for Persistent Volume Claim is correct"
+          else
+            echo "❌ Capacity for Persistent Volume Claim is incorrect"
+          fi
+      - name: Check if correct Persistent Volume Claim storageClass applied
+        run: |
+          PVC_STORAGE_CLASS=`kubectl describe pvc postgres | grep "StorageClass" | grep "manual" -o`
+          if [ "$PVC_STORAGE_CLASS" == "manual" ]; then
+            echo "✅ StorageClass for Persistent Volume Claim is correct"
+          else
+            echo "❌ StorageClass for Persistent Volume Claim is incorrect"
+          fi
+      # DEPLOYMENT CHECKS
+      - name: Check if Deployment inherits ConfigMap values correctly
+        run: |
+          DEPLOYMENT_CONFIGMAP=`kubectl describe deployment postgres | grep "Environment Variables from:" -A 1 | grep 'postgres-config' -o`
+          if [ "$DEPLOYMENT_CONFIGMAP" == "postgres-config" ]; then
+            echo "✅ Deployment ConfigMap setup is correct"
+          else
+            echo "❌ Deployment ConfigMap setup is incorrect"
+          fi
+      - name: Check if Deployment uses Persistent Volume Claim correctly
+        run: |
+          DEPLOYMENT_VOLUME_MOUNT=`kubectl describe deployment postgres | grep "ClaimName:" | grep 'postgres-pv-claim' -o`
+          if [ "$DEPLOYMENT_VOLUME_MOUNT" == "postgres-pv-claim" ]; then
+            echo "✅ Deployment Persistent Volume Claim setup is correct"
+          else
+            echo "❌ Deployment Persistent Volume Claim setup is incorrect"
+          fi
