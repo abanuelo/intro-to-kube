@@ -8,4 +8,4 @@ data:
   # TODO: Configure the following values
   # POSTGRES_DB as postgresdb
   # POSTGRES_USER as admin
-  # POSTGRES_PASSWORD as password
+  # POSTGRES_PASSWORD as psltest
