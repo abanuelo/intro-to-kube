@@ -18,11 +18,11 @@ We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codes
 
 - Week 1
 
-  a. **Scavenger Hunt (Optional)** - helps us explore our minikube environment and how to use the `kubectl` tool.
+  a. **[Scavenger Hunt (Optional)](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/scavenger-hunt)** - helps us explore our minikube environment and how to use the `kubectl` tool.
 
-  b. **Cyber Monday** - main project focused on exploring Deployments, Horizontal Pod Autoscalers, and Services.
+  b. **[Cyber Monday](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/project-1-instructions)** - main project focused on exploring Deployments, Horizontal Pod Autoscalers, and Services.
 
-- Week 2 - **Pesky Persistent DB** - explore deploying databases in microservice ecoysystem with the help of Deployments, Configmaps, and Persistent Volumes
+- Week 2 - **[Pesky Persistent DB](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/project-2-instructions)** - explore deploying databases in microservice ecoysystem with the help of Deployments, Configmaps, and Persistent Volumes
 
 - Week 3 - **RBAC-to-the-future** - learn about introducing role-based access control on cluster resources to help scale users interacting with our clusers
 

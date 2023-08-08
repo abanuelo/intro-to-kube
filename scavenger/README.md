@@ -1,4 +1,8 @@
-# Scavenger Hunt
+# [Scavenger Hunt](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/scavenger-hunt)
+
+## Note
+
+You can also follow along with the info through the Uplimit Course [here](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/scavenger-hunt).
 
 ## Background
 
@@ -8,9 +12,10 @@ Your next ramp-up task is going to be an exciting one! Get ready for a Kubernete
 
 ## Setup
 
-Create K8s resources by running
+Create K8s resources by starting up minikube and running the following commands:
 
 ```
+cd scavenger
 ./scavenger-setup.sh
 ```
 
