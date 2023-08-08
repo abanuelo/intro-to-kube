@@ -22,7 +22,7 @@ We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codes
 
   b. **Cyber Monday** - main project focused on exploring Deployments, Horizontal Pod Autoscalers, and Services.
 
-- Week 2 - **Pesky Persistent DB** - explore deploying databases in microservice ecoysystem with the help of StatefulSets and Persistent Volumes
+- Week 2 - **Pesky Persistent DB** - explore deploying databases in microservice ecoysystem with the help of Deployments, Configmaps, and Persistent Volumes
 
 - Week 3 - **RBAC-to-the-future** - learn about introducing role-based access control on cluster resources to help scale users interacting with our clusers
 
