@@ -83,6 +83,11 @@ jobs:
             OTHER_NS="database"
           fi 
           kubectl apply -f ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding.yml
+          echo "NAMESPACES"
+          echo "------------------------"
+          echo $NS
+          echo $OTHER_NS
+          echo "------------------------"
           sed "s/$NS/$OTHER_NS/g" ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding.yml > ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding-next.yml
           kubectl apply -f ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding-next.yml
 
@@ -164,6 +169,12 @@ jobs:
               THIRD_NS="staging"
             fi
           fi
+          echo "NAMESPACES"
+          echo "------------------------"
+          echo $NS
+          echo $SECOND_NS
+          echo $THIRD_NS
+          echo "------------------------"
 
           kubectl apply -f ./rbac-to-the-future/roles/developer/developer-rolebinding.yml
           sed "s/$NS/$SECOND_NS/g" ./rbac-to-the-future/roles/developer/developer-rolebinding.yml > ./rbac-to-the-future/roles/developer/developer-rolebinding-second.yml
