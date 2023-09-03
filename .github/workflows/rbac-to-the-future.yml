@@ -1,0 +1,73 @@
+name: RBAC To The Future
+on:
+  push:
+    branches:
+      - "rbac-**"
+
+jobs:
+  scavenger:
+    name: RBAC To The Future 💫
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@master
+        id: minikube
+        with:
+          driver: docker
+          memory: 2048
+      - name: Setup
+        run: |
+          kubectl create namespace dev
+          kubectl create namespace staging
+          kubectl create namespace prod
+          kubectl create namespace database
+          kubectl create namespace backup
+
+          kubectl config set-context --current --namespace=dev
+          kubectl create -f ./rbac-to-the-future/k8s/nginx-deployment.yml
+          kubectl config set-context --current --namespace=staging
+          kubectl create -f ./rbac-to-the-future/k8s/nginx-deployment.yml
+          kubectl config set-context --current --namespace=prod
+          kubectl create -f ./rbac-to-the-future/k8s/nginx-deployment.yml
+          kubectl config set-context --current --namespace=database
+          kubectl create -f ./rbac-to-the-future/k8s/postgres-pod.yml
+          kubectl config set-context --current --namespace=backup
+          kubectl create -f ./rbac-to-the-future/k8s/postgres-pod.yml
+
+          kubectl config set-context --current --namespace=default
+      - name: Create Users and Contexts
+        run: |
+          bash ./rbac-to-the-future/create_users.sh
+      # JULES
+      - name: Jules RBAC Successful?
+        run: |
+          kubectl apply -f ./rbac-to-the-future/roles/intern.yml
+          kubectl config use-context Jules-context
+
+          kubectl get pods --namespace staging
+          FORBIDDEN=`echo $?`
+
+          if [ "$FORBIDDEN" == "1" ]; then
+            echo "✅ Cannot access pods in non-dev namespace"
+          else
+            echo "❌ Can access pods in non-dev namespace"
+          fi
+
+          kubectl run my-pod --image=nginx --namespace dev
+          FORBIDDEN=`echo $?`
+          if [ "$FORBIDDEN" == "1" ]; then
+            echo "✅ Cannot create/update resources in dev namespace"
+          else
+            echo "❌ Can create/update resources in dev namespace"
+          fi
+
+          kubectl get pods --namespace dev
+          ALLOWED=`echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can access pods in dev namespace"
+          else
+            echo "❌ Cannot access pods in dev namespace"
+          fi
