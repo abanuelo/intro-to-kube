@@ -173,7 +173,7 @@ git push -u origin rbac-<github-username>
       kubectl apply -f ./roles/db-admin/db-admin-rolebinding.yml
       ```
 
-      Feel free to construct similar tests we did in step 0 or rely on the CI/CD to test your implementation.
+      Feel free to construct similar tests we did in step 0 or rely on the CI/CD to test your implementation. 
 
 2. For the next Role, it will follow a very similar date to step 1. Please create the `Developer` Role with full read/write access to all resources within the `prod`, `staging`, and `dev` namespaces. The exception here will be they can not DELETE any resources as that is the responsibility of the KubeAdmin. Apply the RoleBindings to Joey. Test as needed.
 
@@ -193,6 +193,6 @@ git push -u origin rbac-<github-username>
 ## Challenge
 0. So far we have a relatively small team: you, Jessica, Jules, Joey, and Jesus. What if we get more engineers? What is there begins to be some specialization in the types of engineers we hire?
 
-   In this challenge question, we will explore how we can introduce Groups as a way to improve our overall access to our RBAC microservice world. Please extend the current Role/RoleBindings/ClusterRoles/ClusterRoleBindings to create two groups. Please also allocate the following people under these [Groups](https://kubernetes.io/docs/reference/access-authn-authz/rbac/): 
+   In this challenge question, we will explore how we can introduce [Groups](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) as a way to improve our overall access to our RBAC microservice world. Please extend the current Role/RoleBindings/ClusterRoles/ClusterRoleBindings to create two groups. Please also allocate the following people under these [Groups](https://kubernetes.io/docs/reference/access-authn-authz/rbac/): 
    - **Software Engineers** - Joey, Jesus, and Jules
    - **Data Engineers** - Jessica
