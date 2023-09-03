@@ -164,13 +164,8 @@ git push -u origin rbac-<github-username>
 1. The next Role to build will be `DBAdmin`. Here we want to grant the database admin to do any read/writes they need to any resources strictly within the `database` and `backup` namespaces. For this to happen, you will need to create a single Role and then create multiple RoleBindings per namespaces for the user Jessica:
 
       ```
-      kubectl apply -f ./roles/db-admin/db-admin-role.yml
-
-      # first within the database ns
-      kubectl apply -f ./roles/db-admin/db-admin-rolebinding.yml
-
-      # next within the backup ns
-      kubectl apply -f ./roles/db-admin/db-admin-rolebinding.yml
+      # first within the database ns, then backup ns
+      kubectl apply -f ./roles/db-admin.yml
       ```
 
       Feel free to construct similar tests we did in step 0 or rely on the CI/CD to test your implementation. 
@@ -178,10 +173,8 @@ git push -u origin rbac-<github-username>
 2. For the next Role, it will follow a very similar date to step 1. Please create the `Developer` Role with full read/write access to all resources within the `prod`, `staging`, and `dev` namespaces. The exception here will be they can not DELETE any resources as that is the responsibility of the KubeAdmin. Apply the RoleBindings to Joey. Test as needed.
 
    ```
-   kubectl apply -f ./roles/developer/developer-role.yml
-
-   # re-run within relevant ns as needed
-   kubectl apply -f ./roles/developer/developer-rolebinding.yml
+   # re-run in dev, staging, and prod ns
+   kubectl apply -f ./roles/developer.yml
    ```
 
 3. For our last role, we will work to build the `KubeAdmin` role. This role grants a lot more permissions so instead of using the traditional Role and RoleBinding we will define a [ClusterRole and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/). This is perfect for non-namespaced resource management which in our case we hope that our KubeAdmin has all the necessary privileges in place to do any operation across all namespaces in our cluster. Grant this ClusterRoleBinding to Jesus.

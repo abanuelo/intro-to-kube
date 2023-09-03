@@ -73,23 +73,23 @@ jobs:
       - name: Jessica RBAC Checks
         run: |
           kubectl config use-context minikube
-          kubectl apply -f ./rbac-to-the-future/roles/db-admin/db-admin-role.yml
+          kubectl apply -f ./rbac-to-the-future/roles/db-admin.yml
 
-          NS=`cat ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding.yml | grep namespace | grep 'database' -o`
+          NS=`cat ./rbac-to-the-future/roles/db-admin.yml | grep namespace -m 1 | grep 'database' -o`
           if [ "$NS" == "database" ]; then
             OTHER_NS="backup"
           else
             NS="backup"
             OTHER_NS="database"
           fi 
-          kubectl apply -f ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding.yml
+
           echo "NAMESPACES"
           echo "------------------------"
           echo $NS
           echo $OTHER_NS
           echo "------------------------"
-          sed "s/$NS/$OTHER_NS/g" ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding.yml > ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding-next.yml
-          kubectl apply -f ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding-next.yml
+          sed "s/$NS/$OTHER_NS/g" ./rbac-to-the-future/roles/db-admin.yml > ./rbac-to-the-future/roles/db-admin-next.yml
+          kubectl apply -f ./rbac-to-the-future/roles/db-admin-next.yml
 
           kubectl config use-context Jessica-context
 
@@ -121,11 +121,11 @@ jobs:
             echo "❌ Cannot delete resources in database namespace"
           fi
 
-           ALLOWED=`kubectl run my-pod --image=nginx --namespace backup &>/dev/null; echo $?`
+          ALLOWED=`kubectl run my-pod --image=nginx --namespace backup &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in backup namespace"
           else
-            echo "❌ Cannot create pods in database namespace"
+            echo "❌ Cannot create pods in backup namespace"
           fi
 
           ALLOWED=`kubectl delete pod my-pod --namespace backup &>/dev/null; echo $?`
@@ -152,14 +152,14 @@ jobs:
       - name: Joey RBAC Checks
         run: |
           kubectl config use-context minikube
-          kubectl apply -f ./rbac-to-the-future/roles/developer/developer-role.yml
+          kubectl apply -f ./rbac-to-the-future/roles/developer.yml
 
-          NS=`cat ./rbac-to-the-future/roles/developer/developer-rolebinding.yml | grep namespace | grep 'dev' -o`
+          NS=`cat ./rbac-to-the-future/roles/developer.yml | grep namespace -m 1 | grep 'dev' -o`
           if [ "$NS" == "dev" ]; then
             SECOND_NS="staging"
             THIRD_NS="prod"
           else
-            NS=`cat ./rbac-to-the-future/roles/developer/developer-rolebinding.yml | grep namespace | grep 'staging' -o`
+            NS=`cat ./rbac-to-the-future/roles/developer.yml | grep namespace -m 1 | grep 'staging' -o`
             if [ "$NS" == "staging" ]; then
               SECOND_NS="dev"
               THIRD_NS="prod"
@@ -176,11 +176,11 @@ jobs:
           echo $THIRD_NS
           echo "------------------------"
 
-          kubectl apply -f ./rbac-to-the-future/roles/developer/developer-rolebinding.yml
-          sed "s/$NS/$SECOND_NS/g" ./rbac-to-the-future/roles/developer/developer-rolebinding.yml > ./rbac-to-the-future/roles/developer/developer-rolebinding-second.yml
-          sed "s/$NS/$THIRD_NS/g" ./rbac-to-the-future/roles/developer/developer-rolebinding.yml > ./rbac-to-the-future/roles/developer/developer-rolebinding-third.yml
-          kubectl apply -f ./rbac-to-the-future/roles/developer/developer-rolebinding-second.yml
-          kubectl apply -f ./rbac-to-the-future/roles/developer/developer-rolebinding-third.yml
+          sed "s/$NS/$OTHER_NS/g"  ./rbac-to-the-future/roles/developer.yml >  ./rbac-to-the-future/roles/developer-second.yml
+          sed "s/$NS/$OTHER_NS/g"  ./rbac-to-the-future/roles/developer.yml >  ./rbac-to-the-future/roles/developer-third.yml
+
+          kubectl apply -f ./rbac-to-the-future/roles/developer-second.yml
+          kubectl apply -f ./rbac-to-the-future/roles/developer-third.yml
 
           kubectl config use-context Joey-context
 
@@ -259,4 +259,115 @@ jobs:
             echo "✅ Cannot create/update resources in namespaces other than dev, staging or prod"
           else
             echo "❌ Can create/update resources in namespaces other than dev, staging or prod"
+          fi
+      # JESUS
+      - name: Jesus RBAC Checks
+        run: |
+          kubectl config use-context minikube
+          kubectl apply -f ./rbac-to-the-future/roles/kube-admin.yml
+          kubectl config use-context Jesus-context
+
+          ALLOWED=`kubectl get pods --namespace dev &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can access pods in dev namespace"
+          else
+            echo "❌ Cannot access pods in dev namespace"
+          fi
+
+          ALLOWED=`kubectl get pods --namespace staging &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can access pods in staging namespace"
+          else
+            echo "❌ Cannot access pods in staging namespace"
+          fi
+
+          ALLOWED=`kubectl get pods --namespace prod &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can access pods in prod namespace"
+          else
+            echo "❌ Cannot access pods in prod namespace"
+          fi
+
+          ALLOWED=`kubectl get pods --namespace database &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can access pods in database namespace"
+          else
+            echo "❌ Cannot access pods in database namespace"
+          fi
+
+          ALLOWED=`kubectl get pods --namespace backup &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can access pods in backup namespace"
+          else
+            echo "❌ Cannot access pods in backup namespace"
+          fi
+
+          ALLOWED=`kubectl run my-pod --image=nginx --namespace dev &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can create pods in dev namespace"
+          else
+            echo "❌ Cannot create pods in dev namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace dev &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in dev namespace"
+          else
+            echo "❌ Cannot delete resources in dev namespace"
+          fi
+
+          ALLOWED=`kubectl run my-pod --image=nginx --namespace staging &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can create pods in staging namespace"
+          else
+            echo "❌ Cannot create pods in staging namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace staging &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in staging namespace"
+          else
+            echo "❌ Cannot delete resources in staging namespace"
+          fi
+
+          ALLOWED=`kubectl run my-pod --image=nginx --namespace prod &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can create pods in prod namespace"
+          else
+            echo "❌ Cannot create pods in prod namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace prod &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in prod namespace"
+          else
+            echo "❌ Cannot delete resources in prod namespace"
+          fi
+
+          ALLOWED=`kubectl run my-pod --image=nginx --namespace database &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can create pods in database namespace"
+          else
+            echo "❌ Cannot create pods in database namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace datbase &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in database namespace"
+          else
+            echo "❌ Cannot delete resources in database namespace"
+          fi
+
+          ALLOWED=`kubectl run my-pod --image=nginx --namespace backup &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can create pods in backup namespace"
+          else
+            echo "❌ Cannot create pods in backup namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace backup &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in backup namespace"
+          else
+            echo "❌ Cannot delete resources in backup namespace"
           fi

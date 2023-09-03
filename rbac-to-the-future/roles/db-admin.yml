@@ -1,0 +1,19 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: DBAdmin
+  namespace: database # TODO: Re-run this file with other necessary ns
+rules:
+# TODO:
+# target all resources with full access
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: DBAdminBinding
+  namespace: database # TODO: Re-run this file with other necessary ns, match with role above
+subjects:
+# TODO: add Jessica as target user
+# note: this is case sensitive
+roleRef:
+# TODO: add target role to DBAdmin
