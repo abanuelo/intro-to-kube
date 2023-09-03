@@ -42,13 +42,12 @@ jobs:
         run: |
           bash ./rbac-to-the-future/create_users.sh
       # JULES
-      - name: Jules RBAC Successful?
+      - name: Jules RBAC Checks
         run: |
           kubectl apply -f ./rbac-to-the-future/roles/intern.yml
           kubectl config use-context Jules-context
 
-          kubectl get pods --namespace staging
-          FORBIDDEN=`echo $?`
+          FORBIDDEN=`kubectl get pods --namespace staging | echo $?`
 
           if [ "$FORBIDDEN" == "1" ]; then
             echo "✅ Cannot access pods in non-dev namespace"
@@ -56,18 +55,57 @@ jobs:
             echo "❌ Can access pods in non-dev namespace"
           fi
 
-          kubectl run my-pod --image=nginx --namespace dev
-          FORBIDDEN=`echo $?`
+          FORBIDDEN=`kubectl run my-pod --image=nginx --namespace dev | echo $?`
           if [ "$FORBIDDEN" == "1" ]; then
             echo "✅ Cannot create/update resources in dev namespace"
           else
             echo "❌ Can create/update resources in dev namespace"
           fi
 
-          kubectl get pods --namespace dev
-          ALLOWED=`echo $?`
+          ALLOWED=`kubectl get pods --namespace dev | echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can access pods in dev namespace"
           else
             echo "❌ Cannot access pods in dev namespace"
+          fi
+      # JESSICA
+      - name: Jessica RBAC Checks
+        run: |
+          kubectl apply -f ./rbac-to-the-future/roles/db-admin/db-admin-role.yml
+          kubectl apply -f ./rbac-to-the-future/roles/db-admin/db-admin-rolebinding.yml
+          kubectl config use-context Jessica-context
+
+          ALLOWED=`kubectl get pods --namespace database | echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can access pods in database namespace"
+          else
+            echo "❌ Cannot access pods in database namespace"
+          fi
+
+          ALLOWED=`kubectl run my-pod --image=nginx --namespace database | echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can create pods in database namespace"
+          else
+            echo "❌ Cannot create pods in database namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace database | echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in database namespace"
+          else
+            echo "❌ Cannot delete resources in database namespace"
+          fi
+
+          FORBIDDEN=`kubectl get pods --namespace dev | echo $?`
+          if [ "$FORBIDDEN" == "1" ]; then
+            echo "✅ Cannot get resources in non-database namespace"
+          else
+            echo "❌ Can get resources in non-database namespace"
+          fi
+
+          FORBIDDEN=`kubectl get pods --namespace dev | echo $?`
+          if [ "$FORBIDDEN" == "1" ]; then
+            echo "✅ Cannot create/update resources in non-database namespace"
+          else
+            echo "❌ Can create/update resources in non-database namespace"
           fi
