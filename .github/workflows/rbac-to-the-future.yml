@@ -291,7 +291,7 @@ jobs:
             echo "❌ Cannot access pods in backup namespace"
           fi
 
-          $ Adding more waits
+          # Adding more waits
           sleep 6
 
           ALLOWED=`kubectl run pod-1 --image=nginx --namespace dev &>/dev/null; echo $?`
