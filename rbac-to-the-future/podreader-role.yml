@@ -1,8 +1,0 @@
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  namespace: default
-  name: pod-reader
-rules:
-# TODO:
-# target pods with verbs get, watch, list

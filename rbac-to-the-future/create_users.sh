@@ -23,13 +23,13 @@ openssl x509 -req -in Jules.csr -CA ~/.minikube/ca.crt -CAkey ~/.minikube/ca.key
 
 # create user and contexts necessary
 kubectl config set-credentials Jesus --client-certificate=Jesus.crt --client-key=Jesus.key
-kubectl config set-context Jesus-context --user=Jesus
+kubectl config set-context Jesus-context --user=Jesus --cluster=minikube
 
 kubectl config set-credentials Joey --client-certificate=Joey.crt --client-key=Joey.key
-kubectl config set-context Joey-context --user=Joey
+kubectl config set-context Joey-context --user=Joey --cluster=minikube
 
 kubectl config set-credentials Jessica --client-certificate=Jessica.crt --client-key=Jessica.key
-kubectl config set-context Jessica-context --user=Jessica
+kubectl config set-context Jessica-context --user=Jessica --cluster=minikube
 
 kubectl config set-credentials Jules --client-certificate=Jules.crt --client-key=Jules.key
-kubectl config set-context Jules-context --user=Jules
+kubectl config set-context Jules-context --user=Jules --cluster=minikube

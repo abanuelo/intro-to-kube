@@ -1,0 +1,10 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: DBAdminBinding
+  namespace: database # TODO: Re-rerun this file with the backup ns
+subjects:
+# TODO: add Jessica as target user
+# note: this is case sensitive
+roleRef:
+# TODO: add target role to DBAdmin

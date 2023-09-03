@@ -52,7 +52,72 @@ bash create_users.sh
 
 Afterwards run `kubectl config view` and expect to see something like this under `contexts` and `users`
 ```
-
+kubectl config view
+---
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /home/codespace/.minikube/ca.crt
+    extensions:
+    - extension:
+        last-update: Sat, 02 Sep 2023 23:10:39 UTC
+        provider: minikube.sigs.k8s.io
+        version: v1.31.2
+      name: cluster_info
+    server: https://192.168.49.2:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    user: Jessica
+  name: Jessica-context
+- context:
+    cluster: minikube
+    user: Jesus
+  name: Jesus-context
+- context:
+    cluster: minikube
+    user: Joey
+  name: Joey-context
+- context:
+    cluster: minikube
+    user: Jules
+  name: Jules-context
+- context:
+    cluster: minikube
+    extensions:
+    - extension:
+        last-update: Sat, 02 Sep 2023 23:10:39 UTC
+        provider: minikube.sigs.k8s.io
+        version: v1.31.2
+      name: context_info
+    namespace: default
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: Jessica
+  user:
+    client-certificate: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Jessica.crt
+    client-key: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Jessica.key
+- name: Jesus
+  user:
+    client-certificate: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Jesus.crt
+    client-key: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Jesus.key
+- name: Joey
+  user:
+    client-certificate: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Joey.crt
+    client-key: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Joey.key
+- name: Jules
+  user:
+    client-certificate: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Jules.crt
+    client-key: /workspaces/intro-to-kube/rbac-to-the-future/user_certs/Jules.key
+- name: minikube
+  user:
+    client-certificate: /home/codespace/.minikube/profiles/minikube/client.crt
+    client-key: /home/codespace/.minikube/profiles/minikube/client.key
 ```
 
 ## Testing
@@ -76,8 +141,7 @@ git push -u origin rbac-<github-username>
 0. Let's start with easiest [Role](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) and [RoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) to build. Let's give read only access to the `Intern` role by defining `get`, `watch`, and `list` actions to `Pod` and `Deployment` resources strictly to the `dev` namespace. Afterwards bind this `Role` to Jules via the `RoleBinding`. When you are ready run:
 
    ```
-   kubectl config set-context --current --namespace=dev
-   kubectl apply intern.yml
+   kubectl apply -f ./roles/intern.yml
    ```
 
    To test if Jules has the proper restrictions in place by running:
@@ -95,36 +159,40 @@ git push -u origin rbac-<github-username>
    kubectl get pods --namespace dev
    ```
 
-You can run similar tests for the remaining Roles and RoleBindings we will create next or look at the [Testing](#testing) for more details.
+      You can run similar tests for the remaining Roles and RoleBindings we will create next or look at the [Testing](#testing) for more details.
 
+1. The next Role to build will be `DBAdmin`. Here we want to grant the database admin to do any read/writes they need to any resources strictly within the `database` and `backup` namespaces. For this to happen, you will need to create a single Role and then create multiple RoleBindings per namespaces for the user Jessica:
 
-1. Next we will work on defining the PodWriter. We have two files as well:
+      ```
+      kubectl apply -f ./roles/db-admin/db-admin-role.yml
 
-   - `podwriter-role.yml` will find a Role on the `Pod` resources with verbs `get`, `create`, `delete`, `update`, `edit`, and `exec`.
-   - `podwriter-rolebinding.yml` will create the necessary RoleBinding to the podwriter user.
+      # first within the database ns
+      kubectl apply -f ./roles/db-admin/db-admin-rolebinding.yml
 
-   When you are ready run `kubectl apply -f podwriter-role.yml` and `kubectl apply -f podwriter-rolebinding.yml`.
+      # next within the backup ns
+      kubectl apply -f ./roles/db-admin/db-admin-rolebinding.yml
+      ```
 
-2. Next we are going to try some of operations for the podreader to determine if we can truly just read pods. Let's switch into the podreader context:
+      Feel free to construct similar tests we did in step 0 or rely on the CI/CD to test your implementation.
 
-```
-kubectl config use-context podreader-context
-#should fail
-kubectl create namespace test
-# should pass
-kubectl get pod #should pass
-```
+2. For the next Role, it will follow a very similar date to step 1. Please create the `Developer` Role with full read/write access to all resources within the `prod`, `staging`, and `dev` namespaces. The exception here will be they can not DELETE any resources as that is the responsibility of the KubeAdmin. Apply the RoleBindings to Joey. Test as needed.
 
-3. We will do the same for podwriter. Let's run the following lines of code
+   ```
+   kubectl apply -f ./roles/developer/developer-role.yml
 
-```
-kubectl config use-context podwriter-context
-#should pass
-kubectl get pod
-# should pass
-kubectl edit pod <pod-name>
-# should fail
-kubectl create namespace test
-```
+   # re-run within relevant ns as needed
+   kubectl apply -f ./roles/developer/developer-rolebinding.yml
+   ```
+
+3. For our last role, we will work to build the `KubeAdmin` role. This role grants a lot more permissions so instead of using the traditional Role and RoleBinding we will define a [ClusterRole and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/). This is perfect for non-namespaced resource management which in our case we hope that our KubeAdmin has all the necessary privileges in place to do any operation across all namespaces in our cluster. Grant this ClusterRoleBinding to Jesus.
+
+   ```
+   kubectl apply -f ./roles/kube-admin.yml
+   ```
 
 ## Challenge
+0. So far we have a relatively small team: you, Jessica, Jules, Joey, and Jesus. What if we get more engineers? What is there begins to be some specialization in the types of engineers we hire?
+
+   In this challenge question, we will explore how we can introduce Groups as a way to improve our overall access to our RBAC microservice world. Please extend the current Role/RoleBindings/ClusterRoles/ClusterRoleBindings to create two groups. Please also allocate the following people under these [Groups](https://kubernetes.io/docs/reference/access-authn-authz/rbac/): 
+   - **Software Engineers** - Joey, Jesus, and Jules
+   - **Data Engineers** - Jessica
