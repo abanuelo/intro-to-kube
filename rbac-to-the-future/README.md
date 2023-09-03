@@ -42,6 +42,7 @@ Start up your `minikube` environment by running:
 
 ```
 cd rbac-to-the-future
+minikube start
 bash setup.sh
 ```
 

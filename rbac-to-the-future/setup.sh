@@ -1,11 +1,3 @@
-# Run only once minikube and relevant dependencies installed
-if [ ! -f /usr/local/bin/minikube ]; then
-  echo "Minikube not found. Please create a new codespace environment or restart the existing one."
-fi
-
-# start minikube
-minikube start
-
 # create namespaces
 kubectl create namespace dev
 kubectl create namespace staging

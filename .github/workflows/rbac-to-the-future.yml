@@ -20,24 +20,7 @@ jobs:
           memory: 2048
       - name: Setup
         run: |
-          kubectl create namespace dev
-          kubectl create namespace staging
-          kubectl create namespace prod
-          kubectl create namespace database
-          kubectl create namespace backup
-
-          kubectl config set-context --current --namespace=dev
-          kubectl create -f ./rbac-to-the-future/k8s/nginx-deployment.yml
-          kubectl config set-context --current --namespace=staging
-          kubectl create -f ./rbac-to-the-future/k8s/nginx-deployment.yml
-          kubectl config set-context --current --namespace=prod
-          kubectl create -f ./rbac-to-the-future/k8s/nginx-deployment.yml
-          kubectl config set-context --current --namespace=database
-          kubectl create -f ./rbac-to-the-future/k8s/postgres-pod.yml
-          kubectl config set-context --current --namespace=backup
-          kubectl create -f ./rbac-to-the-future/k8s/postgres-pod.yml
-
-          kubectl config set-context --current --namespace=default
+          bash ./rbac-to-the-future/setup.sh
       - name: Create Users and Contexts
         run: |
           bash ./rbac-to-the-future/create_users.sh
@@ -114,18 +97,21 @@ jobs:
             echo "❌ Cannot create pods in database namespace"
           fi
 
+           ALLOWED=`kubectl run my-pod --image=nginx --namespace backup &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can create pods in backup namespace"
+          else
+            echo "❌ Cannot create pods in backup namespace"
+          fi
+
+          # Wait for pods to get created
+          sleep 6
+
           ALLOWED=`kubectl delete pod my-pod --namespace database &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can delete resources in database namespace"
           else
             echo "❌ Cannot delete resources in database namespace"
-          fi
-
-          ALLOWED=`kubectl run my-pod --image=nginx --namespace backup &>/dev/null; echo $?`
-          if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can create pods in backup namespace"
-          else
-            echo "❌ Cannot create pods in backup namespace"
           fi
 
           ALLOWED=`kubectl delete pod my-pod --namespace backup &>/dev/null; echo $?`
@@ -176,8 +162,8 @@ jobs:
           echo $THIRD_NS
           echo "------------------------"
 
-          sed "s/$NS/$OTHER_NS/g"  ./rbac-to-the-future/roles/developer.yml >  ./rbac-to-the-future/roles/developer-second.yml
-          sed "s/$NS/$OTHER_NS/g"  ./rbac-to-the-future/roles/developer.yml >  ./rbac-to-the-future/roles/developer-third.yml
+          sed "s/$NS/$SECOND_NS/g"  ./rbac-to-the-future/roles/developer.yml >  ./rbac-to-the-future/roles/developer-second.yml
+          sed "s/$NS/$THIRD_NS/g"  ./rbac-to-the-future/roles/developer.yml >  ./rbac-to-the-future/roles/developer-third.yml
 
           kubectl apply -f ./rbac-to-the-future/roles/developer-second.yml
           kubectl apply -f ./rbac-to-the-future/roles/developer-third.yml
@@ -214,17 +200,20 @@ jobs:
 
           ALLOWED=`kubectl run my-pod --image=nginx --namespace staging &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can create staging in dev namespace"
+            echo "✅ Can create pods in staging namespace"
           else
-            echo "❌ Cannot create staging in dev namespace"
+            echo "❌ Cannot create pods in staging namespace"
           fi
 
           ALLOWED=`kubectl run my-pod --image=nginx --namespace prod &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can create prod in dev namespace"
+            echo "✅ Can create pods in prod namespace"
           else
-            echo "❌ Cannot create prod in dev namespace"
+            echo "❌ Cannot create pods in prod namespace"
           fi
+          
+          # Wait for pods to get created
+          sleep 6
 
           FORBIDDEN=`kubectl delete pod my-pod --namespace dev &>/dev/null; echo $?`
           if [ "$FORBIDDEN" == "1" ]; then
@@ -309,25 +298,11 @@ jobs:
             echo "❌ Cannot create pods in dev namespace"
           fi
 
-          ALLOWED=`kubectl delete pod my-pod --namespace dev &>/dev/null; echo $?`
-          if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can delete resources in dev namespace"
-          else
-            echo "❌ Cannot delete resources in dev namespace"
-          fi
-
           ALLOWED=`kubectl run my-pod --image=nginx --namespace staging &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in staging namespace"
           else
             echo "❌ Cannot create pods in staging namespace"
-          fi
-
-          ALLOWED=`kubectl delete pod my-pod --namespace staging &>/dev/null; echo $?`
-          if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can delete resources in staging namespace"
-          else
-            echo "❌ Cannot delete resources in staging namespace"
           fi
 
           ALLOWED=`kubectl run my-pod --image=nginx --namespace prod &>/dev/null; echo $?`
@@ -337,25 +312,11 @@ jobs:
             echo "❌ Cannot create pods in prod namespace"
           fi
 
-          ALLOWED=`kubectl delete pod my-pod --namespace prod &>/dev/null; echo $?`
-          if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can delete resources in prod namespace"
-          else
-            echo "❌ Cannot delete resources in prod namespace"
-          fi
-
           ALLOWED=`kubectl run my-pod --image=nginx --namespace database &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in database namespace"
           else
             echo "❌ Cannot create pods in database namespace"
-          fi
-
-          ALLOWED=`kubectl delete pod my-pod --namespace datbase &>/dev/null; echo $?`
-          if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can delete resources in database namespace"
-          else
-            echo "❌ Cannot delete resources in database namespace"
           fi
 
           ALLOWED=`kubectl run my-pod --image=nginx --namespace backup &>/dev/null; echo $?`
@@ -365,9 +326,40 @@ jobs:
             echo "❌ Cannot create pods in backup namespace"
           fi
 
+          # Wait for pods to get created
+          sleep 6
+
           ALLOWED=`kubectl delete pod my-pod --namespace backup &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can delete resources in backup namespace"
           else
             echo "❌ Cannot delete resources in backup namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace dev &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in dev namespace"
+          else
+            echo "❌ Cannot delete resources in dev namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace staging &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in staging namespace"
+          else
+            echo "❌ Cannot delete resources in staging namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace prod &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in prod namespace"
+          else
+            echo "❌ Cannot delete resources in prod namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod my-pod --namespace datbase &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in database namespace"
+          else
+            echo "❌ Cannot delete resources in database namespace"
           fi
