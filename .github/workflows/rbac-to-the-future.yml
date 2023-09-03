@@ -291,35 +291,38 @@ jobs:
             echo "❌ Cannot access pods in backup namespace"
           fi
 
-          ALLOWED=`kubectl run my-pod --image=nginx --namespace dev &>/dev/null; echo $?`
+          $ Adding more waits
+          sleep 6
+
+          ALLOWED=`kubectl run pod-1 --image=nginx --namespace dev &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in dev namespace"
           else
             echo "❌ Cannot create pods in dev namespace"
           fi
 
-          ALLOWED=`kubectl run my-pod --image=nginx --namespace staging &>/dev/null; echo $?`
+          ALLOWED=`kubectl run pod-2 --image=nginx --namespace staging &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in staging namespace"
           else
             echo "❌ Cannot create pods in staging namespace"
           fi
 
-          ALLOWED=`kubectl run my-pod --image=nginx --namespace prod &>/dev/null; echo $?`
+          ALLOWED=`kubectl run pod-3 --image=nginx --namespace prod &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in prod namespace"
           else
             echo "❌ Cannot create pods in prod namespace"
           fi
 
-          ALLOWED=`kubectl run my-pod --image=nginx --namespace database &>/dev/null; echo $?`
+          ALLOWED=`kubectl run pod-4 --image=nginx --namespace database &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in database namespace"
           else
             echo "❌ Cannot create pods in database namespace"
           fi
 
-          ALLOWED=`kubectl run my-pod --image=nginx --namespace backup &>/dev/null; echo $?`
+          ALLOWED=`kubectl run pod-5 --image=nginx --namespace backup &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can create pods in backup namespace"
           else
@@ -329,37 +332,37 @@ jobs:
           # Wait for pods to get created
           sleep 6
 
-          ALLOWED=`kubectl delete pod my-pod --namespace backup &>/dev/null; echo $?`
-          if [ "$ALLOWED" == "0" ]; then
-            echo "✅ Can delete resources in backup namespace"
-          else
-            echo "❌ Cannot delete resources in backup namespace"
-          fi
-
-          ALLOWED=`kubectl delete pod my-pod --namespace dev &>/dev/null; echo $?`
+          ALLOWED=`kubectl delete pod pod-1 --namespace dev &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can delete resources in dev namespace"
           else
             echo "❌ Cannot delete resources in dev namespace"
           fi
 
-          ALLOWED=`kubectl delete pod my-pod --namespace staging &>/dev/null; echo $?`
+          ALLOWED=`kubectl delete pod pod-2 --namespace staging &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can delete resources in staging namespace"
           else
             echo "❌ Cannot delete resources in staging namespace"
           fi
 
-          ALLOWED=`kubectl delete pod my-pod --namespace prod &>/dev/null; echo $?`
+          ALLOWED=`kubectl delete pod pod-3 --namespace prod &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can delete resources in prod namespace"
           else
             echo "❌ Cannot delete resources in prod namespace"
           fi
 
-          ALLOWED=`kubectl delete pod my-pod --namespace datbase &>/dev/null; echo $?`
+          ALLOWED=`kubectl delete pod pod-4 --namespace database &>/dev/null; echo $?`
           if [ "$ALLOWED" == "0" ]; then
             echo "✅ Can delete resources in database namespace"
           else
             echo "❌ Cannot delete resources in database namespace"
+          fi
+
+          ALLOWED=`kubectl delete pod pod-5 --namespace backup &>/dev/null; echo $?`
+          if [ "$ALLOWED" == "0" ]; then
+            echo "✅ Can delete resources in backup namespace"
+          else
+            echo "❌ Cannot delete resources in backup namespace"
           fi
