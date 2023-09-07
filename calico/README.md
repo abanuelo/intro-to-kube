@@ -64,9 +64,42 @@ For this assignment, we will be looking closely at the [Kubernetes Ingress and E
 - (b) identify the entire namespace from their names/labels OR
 - (c) (not recommended) using the pods explict IPs to redirect traffic. This is not recommended since pods are usually deployed as a Deployment and their IPs are subject to change if they are deleted, cordoned, etc.
 
-0. Fill out networking policy for namespace A under `network-policy-namespace-a.yml` and test your changes by pushing up a branch prefixed with `calico-`
+0. Fill out networking policy for namespace A under `network-policy-namespace-a.yml` and test your changes by pushing up a branch prefixed with `calico-`. You can also aim to manually test your changes by running the following commands below:
 
-1. Fill out networking policy for namespace B under `network-policy-namespace-b.yml` and test your changes by pushing up a branch prefixed with `calico-`
+    a. First you will need to install curl on the postgres pod as it does not come installed by default. **Note: You only need to do this once after creating the postgres pod**
+    ```
+    # exec into the container
+    kubectl exec -it postgres -n namespace-c -- bash
 
-2. Fill out networking policy for namespace C under `network-policy-namespace-c.yml` and test your changes by pushing up a branch prefixed with `calico-`
+    # once in the container run the `apt-get commands below`
+    root@postgres/# apt-get -y update; apt-get -y install curl
+
+    # exit the container
+    root@postgres/# exit
+    ```
+
+    b. Next you can run gather the IPs for your pods by running:
+    ```
+    kubectl get pods --all_namespaces -o wide
+    ```
+    The ports for the nginx pods are 80 and 5432 for the postgres pod, respectively.
+
+    c. To ping let's say the nginx pod from namespace A to the nginx pod in namespace B you can run:
+    ```
+    kubectl exec nginx -n namespace-a -- curl <nginx pod IP from namespace-b>:<nginx port (ie 80)>
+
+    # example
+    kubectl exec nginx -n namespace-a -- curl 10.244.120.72:80
+    ```
+    Or to ping from the nginx pod from namespace A to say the postgres pod in namespace-c you can trigger:
+    ```
+    kubectl exec nginx -n namespace-a -- curl <postgres pod IP from namespace-c>:<postgres port (ie 5432)>
+
+    # example
+    kubectl exec nginx -n namespace-a -- curl 10.244.120.70:5432
+    ```
+
+1. Fill out networking policy for namespace B under `network-policy-namespace-b.yml` and test your changes by pushing up a branch prefixed with `calico-`. See manual testing steps above under item 0. as needed.
+
+2. Fill out networking policy for namespace C under `network-policy-namespace-c.yml` and test your changes by pushing up a branch prefixed with `calico-`. See manual testing steps above under item 0. as needed.
 

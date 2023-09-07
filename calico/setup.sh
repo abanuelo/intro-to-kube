@@ -3,9 +3,16 @@ kubectl create ns namespace-a
 kubectl create ns namespace-b
 kubectl create ns namespace-c
 
-# Create some nginx pods in namespace a and namespace c
-kubectl run nginx-a --image=nginx:latest --restart=Never --port=80 --namespace namespace-a
-kubectl run nginx-b --image=nginx:latest --restart=Never --port=80 --namespace namespace-b
+# Create nginx pod in namespace a
+kubectl config set-context --current --namespace=namespace-a
+kubectl apply -f ./k8s/nginx-pod.yml
+
+# Create nginx pod in namespace a
+kubectl config set-context --current --namespace=namespace-b
+kubectl apply -f ./k8s/nginx-pod.yml
+
+# Revert to default ns
+kubectl config set-context --current --namespace=default
 
 # Create some postgres pod inside namespace c
-kubectl apply -f postgres-pod.yml
+kubectl apply -f ./k8s/postgres-pod.yml
