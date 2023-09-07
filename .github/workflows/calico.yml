@@ -23,6 +23,7 @@ jobs:
 
       - name: Setup
         run: |
+          cd ./calico
           bash ./calico/setup.sh
       
       - name: Install `curl` in Postgres Pod
