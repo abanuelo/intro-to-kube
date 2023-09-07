@@ -25,12 +25,6 @@ jobs:
         run: |
           cd ./calico
           bash setup.sh
-      
-      - name: Install `curl` in Postgres Pod
-        run: |
-          kubectl exec -it postgres -n namespace-c -- bash
-          apt-get -y update; apt-get -y install curl
-          exit
 
       - name: Check Namespace A Network Policies
         run: |
@@ -48,7 +42,7 @@ jobs:
             echo "❌ Cannot ping pods in namespace-b"
           fi
 
-          CONNECT_TO_C =`kubectl exec nginx -n namespace-a -- timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
+          CONNECT_TO_C =`kubectl exec nginx -n namespace-a -- apt update && sudo apt install curl -y && timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
           if [ "$CONNECT_TO_C" == "52" ]; then
             echo "✅ Can ping pods in namespace-c"
           else
@@ -71,7 +65,7 @@ jobs:
             echo "❌ Cannot ping pods in namespace-a"
           fi
 
-          CONNECT_TO_C =`kubectl exec nginx -n namespace-b -- timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
+          CONNECT_TO_C =`kubectl exec nginx -n namespace-b -- apt update && sudo apt install curl -y && timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
           if [ "$CONNECT_TO_C" != "52" ]; then
             echo "✅ Cannot ping pods in namespace-c"
           else
