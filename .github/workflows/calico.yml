@@ -38,6 +38,15 @@ jobs:
           POD_B_IP=`kubectl get pod --all_namespaces -o wide | grep namespace-b | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'`
           POD_C_IP=`kubectl get pod --all_namespaces -o wide | grep namespace-c | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'`
 
+          echo "------------"
+          echo "POD B: "
+          echo "------------"
+          echo $POD_B_IP:$POD_B_PORT
+          echo "------------"
+          echo "POD C: "
+          echo "------------"
+          echo $POD_C_IP:$POD_C_PORT
+
           CONNECT_TO_B=`kubectl exec nginx -n namespace-a -- timeout 5s curl $POD_B_IP:$POD_B_PORT &>/dev/null; echo $?`
           if [ "$CONNECT_TO_B" == "0" ]; then
             echo "✅ Can ping pods in namespace-b"
@@ -45,8 +54,12 @@ jobs:
             echo "❌ Cannot ping pods in namespace-b"
           fi
 
+          echo "1"
+
           C_CONNECT_OUTPUT=`kubectl exec nginx -n namespace-a -- apt update && sudo apt install curl -y && timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
+          echo "2"
           CONNECT_TO_C=`echo $C_CONNECT_OUTPUT | grep -oE '\w+$'`
+          echo "3"
           if [ "$CONNECT_TO_C" == "52" ]; then
             echo "✅ Can ping pods in namespace-c"
           else
