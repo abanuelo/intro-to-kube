@@ -33,28 +33,10 @@ jobs:
           kubectl apply -f network-policy-namespace-a.yml
           sleep 3
           
-          echo "attempting items below"
           POD_B_PORT=80
           POD_C_PORT=5432
-          echo "PORTS DONE"
           POD_B_IP=`kubectl get pod --all_namespaces -o wide | grep namespace-b | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'`
-          echo "POD B IP DONE"
-          echo $POD_B_IP
-          kubectl get pod --all_namespaces -o wide
-          kubectl get pod --all_namespaces -o wide | grep namespace-c
-          kubectl get pod --all_namespaces -o wide | grep namespace-c | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'
           POD_C_IP=`kubectl get pod --all_namespaces -o wide | grep namespace-c | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'`
-          echo "POD C IP DONE"
-          echo $POD_C_IP
-
-          echo "------------"
-          echo "POD B: "
-          echo "------------"
-          echo $POD_B_IP:$POD_B_PORT
-          echo "------------"
-          echo "POD C: "
-          echo "------------"
-          echo $POD_C_IP:$POD_C_PORT
 
           CONNECT_TO_B=`kubectl exec nginx -n namespace-a -- timeout 5s curl $POD_B_IP:$POD_B_PORT &>/dev/null; echo $?`
           if [ "$CONNECT_TO_B" == "0" ]; then
@@ -63,12 +45,10 @@ jobs:
             echo "❌ Cannot ping pods in namespace-b"
           fi
 
-          echo "1"
-
           C_CONNECT_OUTPUT=`kubectl exec nginx -n namespace-a -- apt update && sudo apt install curl -y && timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
-          echo "2"
+          echo $C_CONNECT_OUTPUT
           CONNECT_TO_C=`echo $C_CONNECT_OUTPUT | grep -oE '\w+$'`
-          echo "3"
+          echo $CONNECT_TO_C
           if [ "$CONNECT_TO_C" == "52" ]; then
             echo "✅ Can ping pods in namespace-c"
           else
@@ -94,7 +74,9 @@ jobs:
           fi
 
           C_CONNECT_OUTPUT=`kubectl exec nginx -n namespace-b -- apt update && sudo apt install curl -y && timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
+          echo $C_CONNECT_OUTPUT
           CONNECT_TO_C=`echo $C_CONNECT_OUTPUT | grep -oE '\w+$'`
+          echo $CONNECT_TO_C
           if [ "$CONNECT_TO_C" != "52" ]; then
             echo "✅ Cannot ping pods in namespace-c"
           else
