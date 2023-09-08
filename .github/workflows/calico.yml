@@ -28,6 +28,7 @@ jobs:
 
       - name: Check Namespace A Network Policies
         run: |
+          cd ./calico
           kubectl apply -f network-policy-namespace-a.yml
           
           POD_B_PORT=80
@@ -51,6 +52,7 @@ jobs:
 
       - name: Check Namespace B Network Policies
         run: |
+          cd ./calico
           kubectl apply -f network-policy-namespace-b.yml
 
           POD_A_PORT=80
@@ -74,6 +76,7 @@ jobs:
 
       - name: Check Namespace C Network Policies
         run: |
+          cd ./calico
           kubectl apply -f network-policy-namespace-c.yml
 
           POD_PORT=80
