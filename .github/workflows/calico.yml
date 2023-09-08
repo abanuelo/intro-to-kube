@@ -25,7 +25,7 @@ jobs:
         run: |
           cd ./calico
           bash setup.sh
-          sleep 3
+          sleep 10
 
       - name: Check Namespace A Network Policies
         run: |
