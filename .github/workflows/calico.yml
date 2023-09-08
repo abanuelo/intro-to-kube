@@ -28,6 +28,7 @@ jobs:
 
       - name: Check Namespace A Network Policies
         run: |
+          pwd
           kubectl apply -f network-policy-namespace-a.yml
           
           POD_B_PORT=80
