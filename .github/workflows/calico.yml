@@ -39,8 +39,13 @@ jobs:
           echo "PORTS DONE"
           POD_B_IP=`kubectl get pod --all_namespaces -o wide | grep namespace-b | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'`
           echo "POD B IP DONE"
+          echo $POD_B_IP
+          kubectl get pod --all_namespaces -o wide
+          kubectl get pod --all_namespaces -o wide | grep namespace-c
+          kubectl get pod --all_namespaces -o wide | grep namespace-c | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'
           POD_C_IP=`kubectl get pod --all_namespaces -o wide | grep namespace-c | grep -E -o  '([0-9]{1,3}\.){3}[0-9]{1,3}'`
           echo "POD C IP DONE"
+          echo $POD_C_IP
 
           echo "------------"
           echo "POD B: "
