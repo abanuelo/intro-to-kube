@@ -22,8 +22,16 @@ We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codes
 
   b. **[Cyber Monday](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/project-1-instructions)** - main project focused on exploring Deployments, Horizontal Pod Autoscalers, and Services.
 
-- Week 2 - **[Pesky Persistent DB](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/project-2-instructions)** - explore deploying databases in microservice ecoysystem with the help of Deployments, Configmaps, and Persistent Volumes
+- Week 2
 
-- Week 3 - **RBAC-to-the-future** - learn about introducing role-based access control on cluster resources to help scale users interacting with our clusers
+  a. **[Pesky Persistent DB](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/project-2-instructions)** - explore deploying databases in microservice ecoysystem with the help of Deployments, Configmaps, and Persistent Volumes
 
-- Week 4 - **Calico** - learn about the basics of pod-to-pod networking to create finer control of cluster resources.
+- Week 3
+
+  a. **[RBAC-to-the-future](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/module/project-3-instructions#corise_clm9w276p000j3b7lvx4bov7v)** - learn about introducing role-based access control on cluster resources to help scale users interacting with our clusers
+
+  b.  **[Calico]()** - learn about the basics of pod-to-pod networking to create finer control of cluster resources.
+
+- Week 4
+
+  a. **Tekton** - learn about the basics using Tekton for CI/CD in kubernetes
