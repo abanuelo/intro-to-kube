@@ -83,11 +83,11 @@ jobs:
             echo "❌ git clone step not included"
           fi
 
-          APPLY=`kubectl describe task deploy | grep 'kubectl apply -f /workspace/intro-to-kube/tekton/k8s/nginx-deployment.yml' -o`
-          if [ "$APPLY" == "kubectl apply -f /workspace/intro-to-kube/tekton/k8s/nginx-deployment.yml" ]; then
-            echo "✅ kubectl apply -f /workspace/intro-to-kube/tekton/k8s/nginx-deployment.yml step included"
+          APPLY=`kubectl describe task deploy | grep 'kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml' -o`
+          if [ "$APPLY" == "kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml" ]; then
+            echo "✅ kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml step included"
           else
-            echo "❌ kubectl apply -f /workspace/intro-to-kube/tekton/k8s/nginx-deployment.yml step not included"
+            echo "❌ kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml step not included"
           fi
 
           SET_IMAGE=`kubectl describe task deploy | grep 'kubectl set image' -o`
