@@ -107,6 +107,20 @@ We will write the `build.yml`, `deploy.yml`, and `build-push-deploy-pipeline.yml
     tkn pipelinerun describe build-push-deploy
     ```
 
-
-
 ## Challenge
+
+0. As we hinted in step 1 for the [Main Project](#main-project), we can actually push a real image to our registry and use it as part of the `deploy.yml` task. In order to do this, some pre-requistes include:
+
+- Having access to a GitHub repo for a project that contains a Dockerfile ([example repo here](https://github.com/sahat/hackathon-starter)). If you personally have one, feel free to use yours.
+
+    Now to get this working lets:
+    
+    a. Update `build.yml` and `build-push-deploy-pipeline.yml` to update the `REPO_URL`.
+
+    b. Follow [this minikube guide on container registry add-ons](https://minikube.sigs.k8s.io/docs/handbook/registry/) to connect to your GitHub Container Registry account 
+
+    c. In the `push.yml`, uncomment the boiler code near the end of the file.
+
+    d. Update the necessary parameters in the `push` Task under the `build-push-deploy-pipeline.yml`.
+
+    e. For the `deploy.yml`, change Steps to (1) point to a new Deployment file for your Dockerized app. Feel free to use the file in `k8s/app-deployment.yml` to guide that process. 
