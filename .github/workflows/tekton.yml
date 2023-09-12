@@ -208,6 +208,8 @@ jobs:
           cd ./tekton
           kubectl apply -f ./build-push-deploy-pipelinerun.yml
 
+          sleep 20
+
           SUCCESS_FULL=`tkn pipelineruns describe build-push-deploy | grep 'Status' -A 4 | grep 'Succeeded' -o`
           if [ "$SUCCESS_FULL" == "Succeeded" ]; then
             echo "✅ build-push-deploy succeeded"
