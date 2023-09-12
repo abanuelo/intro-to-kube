@@ -11,7 +11,8 @@ spec:
   steps:
     # TODO
     # Add the following steps to your Task:
-    # 1. Run  `kubectl apply -f /workspace/intro-to-kube/tekton/k8s/nginx-deployment.yml`
-    #    to the ns specified by the params
-    # 2. Update the image for the deployment by running: `kubectl set image deployment/nginx-deployment nginx=<IMAGE-NAME> -n=<NAMESPACE>`
-    #    specified by the image in params and ns specified in params
+    # 1. Clone the repo given the paramters to /workspace/source
+    # 2. Run  `kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml`
+    #    to the ns specified by the paramsl; use image lachlanevenson/k8s-kubectl
+    # 3. Update the image for the deployment by running: `kubectl set image deployment/nginx-deployment nginx=<IMAGE-NAME> -n=<NAMESPACE>`
+    #    specified by the image in params and ns specified in params; use image lachlanevenson/k8s-kubectl

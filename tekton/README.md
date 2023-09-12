@@ -17,17 +17,12 @@ The goal for this project is to automate the process of building, pushing an Doc
 
 ## Setup
 
-Start up your `minikube` environment by running:
+Start up your `minikube` environment and install necessary dependencies by running:
 
 ```
 cd tekton
 minikube start
-```
-
-Next we will install the latest version of Tekon in our minikube cluster
-```
-kubectl apply --filename \
-https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
+bash setup.sh
 ```
 
 Monitor the installation by calling and make sure that `tekton-pipelines-controller` and `tekton-pipelines-webhook` and `READY`:
@@ -42,18 +37,6 @@ tekton-pipelines-controller-6d989cc968-j57cs   0/1     Running             0    
 tekton-pipelines-webhook-69744499d9-t58s5      0/1     Running             0          6s
 tekton-pipelines-controller-6d989cc968-j57cs   1/1     Running             0          10s
 tekton-pipelines-webhook-69744499d9-t58s5      1/1     Running             0          20s
-```
-
-Next we are going to install the `tkn` CLI allowing us to gather the logs for our TaskRun or PipelineRuns that we trigger. 
-
-```
-curl -LO https://github.com/tektoncd/cli/releases/download/v0.32.0/tektoncd-cli-0.32.0_Linux-64bit.deb
-
-sudo dpkg -i ./tektoncd-cli-0.32.0_Linux-64bit.deb
-
-# confirm that tkn is installed
-which tkn
-> /usr/bin/tkn
 ```
 
 ## Testing
@@ -86,13 +69,18 @@ We will write the `build.yml`, `deploy.yml`, and `build-push-deploy-pipeline.yml
 
     Once you are ready to test run `kubectl apply -f ./tasks/build.yml` and you can see its creation status by running `tkn task list`. You can also push up to a branch prefixed with `tekton-` to run automated tests against your changes.
 
+1. Run the `./tasks/push.yml` file as it just contains boiler plate code that will be needed later: `kubectl apply -f ./tasks/push.yml`.
+
 1. Next up we will be writing the deploy Task. A couple of things to note, since minikube does not out-of-the-box support pulling pushing/pulling images from a container registry, the `push.yml` current mocks out the push of an image to Docker's container registry. In the [challenge](#challenge) section of this project, you can revisit our mocked code to get minikube to push up images of your web application to a container registry. 
 
     For now, the `tasks/deploy.yml` file assumes that we have pushed up `nginx:latest` image that we then update for the `k8s/nginx-deployment.yml`.  Please complete the `tasks/deploy.yml` file by adding the following Steps to your Task:
 
-    a. Run  `kubectl apply -f /workspace/intro-to-kube/tekton/k8s/nginx-deployment.yml`
 
-    b. Run: `kubectl set image deployment/nginx-deployment nginx=<IMAGE-NAME> -n=<NAMESPACE>` where `IMAGE_NAME` and `NAMESPACE` are passed as parameters to our Task.
+    a. Clone the repo specified by `REPO_URL` in `/workspace/source/`
+
+    b. Run  `kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml`
+
+    c. Run: `kubectl set image deployment/nginx-deployment nginx=<IMAGE-NAME> -n=<NAMESPACE>` where `IMAGE_NAME` and `NAMESPACE` are passed as parameters to our Task.
 
     Once you are ready to test run `kubectl apply -f ./tasks/deploy.yml` and you can see its creation status by running `tkn task list`.
 
@@ -109,7 +97,7 @@ We will write the `build.yml`, `deploy.yml`, and `build-push-deploy-pipeline.yml
 
 ## Challenge
 
-0. As we hinted in step 1 for the [Main Project](#main-project), we can actually push a real image to our registry and use it as part of the `deploy.yml` task. In order to do this, some pre-requistes include:
+0. As we hinted in step 2 for the [Main Project](#main-project), we can actually push a real image to our registry and use it as part of the `deploy.yml` task. In order to do this, some pre-requistes include:
 
 - Having access to a GitHub repo for a project that contains a Dockerfile ([example repo here](https://github.com/sahat/hackathon-starter)). If you personally have one, feel free to use yours.
 
