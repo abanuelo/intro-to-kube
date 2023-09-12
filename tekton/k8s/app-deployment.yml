@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  labels:
+    app: app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        # TODO: 
+        # FOR CHALLENGE ONLY
+        # Add your image here (ie)
+        # - name: app
+        #   image: <YOUR IMAGE NAME>
+        #   ports:
+        #     - containerPort: 3000

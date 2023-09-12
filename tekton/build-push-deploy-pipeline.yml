@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-push-deploy
+spec:
+  tasks:
+    # TODO:
+    # Add reference to the build, push, and deploy tasks
+    # 1. For the build task add these env variables
+    #   - REPO URL = https://github.com/expressjs/express.git
+    # 2. For the push task add these env variables
+    #   - IMAGE_NAME = nginx:latest
+    #   - DOCKERFILE_PATH = /workspace/source
+    #   - CONTEXT_PATH = /workspace/source
+    #   - CONTAINER_REGISTRY = registry.example.com
+    #   - REGISTRY_USERNAME = Bob
+    #   - REGISTRY_PASSWORD = password1234
+    # 3. For the deploy task add these env variables:
+    #   - NAMESPACE = default
+    #   - IMAGE: nginx:latest
