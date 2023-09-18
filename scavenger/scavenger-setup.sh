@@ -5,4 +5,12 @@ fi
 minikube start
 kubectl create namespace scavenger
 kubectl config set-context --current --namespace=scavenger
-kubectl create -f ./k8s/
+cd k8s
+IFS=$'\n\t'
+for f in $(ls)
+do
+	until kubectl create -f $f 2> /dev/null
+	do
+		sleep 10
+	done
+done
