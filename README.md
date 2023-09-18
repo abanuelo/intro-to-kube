@@ -9,7 +9,7 @@ This repo will contain examples to learn:
 - Deploying basic Services to communicate with HA pods
 - Calico Networking for Pod-to-Pod communication
 - Common K8s troubleshooting
-- Basic K8s logging and metrics
+- Basic K8s DevOps with Tekton
 - Role-Based Access Control (RBAC) for cluster/user resource control
 
 We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codespaces](https://github.com/features/codespaces) to explore K8s. To learn how to setup your codespace environment, [please reference this document](https://corise.com/course/kubernetes-managing-containers-at-scale/v2/module/codespace-setup).
@@ -30,8 +30,8 @@ We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codes
 
   a. **[RBAC-to-the-future](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/module/project-3-instructions#corise_clm9w276p000j3b7lvx4bov7v)** - learn about introducing role-based access control on cluster resources to help scale users interacting with our clusers
 
-  b.  **[Calico]()** - learn about the basics of pod-to-pod networking to create finer control of cluster resources.
+  b.  **[Calico](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/module/project-3-instructions#corise_clm9w2tpt000k3b7ld7w684cy)** - learn about the basics of pod-to-pod networking to create finer control of cluster resources.
 
 - Week 4
 
-  a. **Tekton** - learn about the basics using Tekton for CI/CD in kubernetes
+  a. **[Tekton](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/module_clmpekrcy008l127k3gssb6kp)** - learn about the basics using Tekton for CI/CD in kubernetes
