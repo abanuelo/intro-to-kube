@@ -208,7 +208,7 @@ jobs:
           cd ./tekton
           kubectl apply -f ./build-push-deploy-pipelinerun.yml
 
-          sleep 60
+          sleep 100
 
           tkn pipelinerun describe build-push-deploy
 
