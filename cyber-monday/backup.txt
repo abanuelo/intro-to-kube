@@ -1,0 +1,8 @@
+# TODO: Enter kubectl cp command used to get `log.sh` file into the Pod
+< ANSWER HERE >
+# TODO: Enter kubectl exec command used to execute the `log.sh` in the 
+# background inside the Pod
+< ANSWER HERE >
+# TODO: Enter kubectl cp command used to copy the log file from inside the
+# Pod to your current working directory
+< ANSWER HERE >
