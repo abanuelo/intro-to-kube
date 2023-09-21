@@ -85,7 +85,13 @@ git push -u origin cyber-<github-username>
 
 3. Let's start on our single Pod created from the `nginx-pod.yml`. Run the appropriate `kubectl cp` to copy over the `log.sh` to the Pod's `/tmp/` directory. Write this command in the `backup.txt`.
 
-4. Now let's run the `log.sh` script inside the Pod in the background using the appropriate `kubectl exec` command. The bash command we intend to run is: `nohup ./log.sh > /tmp/foo.log &` for reference. Write this command in `backup.txt`. To verify if this worked, you can use a `kubectl exec` command to cat the contents of that file using: `tail -n 10 /tmp/foo.log`.
+4. Now let's run the `log.sh` script inside the Pod in the background using the appropriate `kubectl exec` command. Before this let's just give the `/tmp/log.sh` proper permissions and touch the `/tmp/foo.log` file by running:
+
+   ```
+   kubectl exec -it nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log
+   ```
+
+   The bash command we intend to run is: `nohup bash -c "/tmp/log.sh &" &` for reference. Write this command in `backup.txt`. To verify if this worked, you can use a `kubectl exec` command to cat the contents of that file using: `tail -n 10 /tmp/foo.log`.
 
 5. Last but not least, let's write a `kubectl cp` command to copy the `/tmp/foo.log` file from inside the Pod onto our machine's current working directory. You can verify it works when the file `foo.log` appears in your current working directory. Write this command inside the `backup.txt` file.
 
