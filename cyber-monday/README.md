@@ -77,7 +77,7 @@ git push -u origin cyber-<github-username>
 
 2. As users start pinging these pods (which won't happen yet fortunately for us 😊), we want to collect metadata around what items they are purchasing for Cyber Monday. Since our logging and metrics aren't set in place yet, we are going to try to collect this metadata by supporting an automated script to take backups of a logfile within our pods and push it into our local machine. To do so we will:
 
-      a. Copy our logging script `log.sh` into our pod, executing it, and observing it write metadata to `/tmp/foo.log` every 3 seconds to simulate users pinging the pods and data getting logged.
+      a. Copy our logging script `log.sh` into our pod, executing it, and observing it write metadata to `/tmp/foo.log` to simulate users pinging the pods and data getting logged.
 
       b. Run a kubectl command to copy the `/tmp/foo.log` file to our local machine's working directory `/workspaces/intro-to-kube/cyber-monday`
 
@@ -85,13 +85,13 @@ git push -u origin cyber-<github-username>
 
 3. Let's start on our single Pod created from the `nginx-pod.yml`. Run the appropriate `kubectl cp` to copy over the `log.sh` to the Pod's `/tmp/` directory. Write this command in the `backup.txt`.
 
-4. Now let's run the `log.sh` script inside the Pod with a timeout of 20 seconds using the appropriate `kubectl exec` command. Before this let's just give the `/tmp/log.sh` proper permissions and touch the `/tmp/foo.log` file by running:
+4. Now let's run the `log.sh` script inside the Pod using the appropriate `kubectl exec` command. Before this let's just give the `/tmp/log.sh` proper permissions and touch the `/tmp/foo.log` file by running:
 
    ```
    kubectl exec nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
    ```
 
-   The bash command we intend to run is: `timeout 20s /tmp/log.sh` for reference. Write this command in `backup.txt`. To verify if this worked, you can use a `kubectl exec` command to cat the contents of that file using: `tail -n 10 /tmp/foo.log`.
+   Write your command in `backup.txt`. To verify if this worked, you can use a `kubectl exec` command to cat the contents of that file using: `tail -n 10 /tmp/foo.log`.
 
 5. Last but not least, let's write a `kubectl cp` command to copy the `/tmp/foo.log` file from inside the Pod onto our machine's current working directory. You can verify it works when the file `foo.log` appears in your current working directory. Write this command inside the `backup.txt` file.
 

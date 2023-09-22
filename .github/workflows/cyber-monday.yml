@@ -91,12 +91,8 @@ jobs:
             echo "❌ Copying log.sh into /tmp/ of Pod failed"
           fi
 
-          echo "Creating /tmp/foo.log"
           kubectl exec nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
-          echo "Applying exec command"
-          echo "$EXEC_CMD"
           eval "$EXEC_CMD"
-          echo "After exec command"
           SECOND=`kubectl exec nginx-pod -- /bin/sh -c 'cat /tmp/foo.log | wc -l'`
           echo "$SECOND"
           if [ "$SECOND" != "0" ]; then
@@ -105,12 +101,8 @@ jobs:
             echo "❌ Executing log.sh and writing to /tmp/foo.log failed"
           fi
 
-          echo "Copying to local disk"
-          echo "$SECOND_COPY_CMD"
           eval "$SECOND_COPY_CMD"
-          echo "After copy to local disk"
           THIRD=`ls | grep foo.log`
-          echo "$THIRD"
           if [ "$THIRD" == "foo.log" ]; then
             echo "✅ Copying /tmp/log.sh from Pod to local machine succeeded"
           else
