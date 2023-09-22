@@ -46,7 +46,7 @@ jobs:
           fi
       - name: Check nginx-deployment YAML config
         run: |
-          kubectl apply -f ./cyber-monday/nginx-deployment.yml
+          kubectl apply -f ./cyber-monday/nginx-deploy.yml
           sleep 10
           IMAGE_NAME=`kubectl describe deployment nginx | grep 'Pod Template' -A 10 | grep 'Image:' | grep 'nginx:latest' -o`
           if [ "$IMAGE_NAME" == "nginx:latest" ]; then
