@@ -88,7 +88,7 @@ git push -u origin cyber-<github-username>
 4. Now let's run the `log.sh` script inside the Pod with a timeout of 20 seconds using the appropriate `kubectl exec` command. Before this let's just give the `/tmp/log.sh` proper permissions and touch the `/tmp/foo.log` file by running:
 
    ```
-   kubectl exec -it nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
+   kubectl exec nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
    ```
 
    The bash command we intend to run is: `timeout 20s /tmp/log.sh` for reference. Write this command in `backup.txt`. To verify if this worked, you can use a `kubectl exec` command to cat the contents of that file using: `tail -n 10 /tmp/foo.log`.

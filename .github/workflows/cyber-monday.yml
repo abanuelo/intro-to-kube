@@ -84,16 +84,16 @@ jobs:
           SECOND_COPY_CMD=`sed -n '9{p;q}' backup.txt`
 
           eval "$FIRST_COPY_CMD"
-          FIRST=`kubectl exec -it nginx-pod -- /bin/sh -c "ls /tmp | grep 'log.sh'"`
+          FIRST=`kubectl exec nginx-pod -- /bin/sh -c "ls /tmp | grep 'log.sh'"`
           if [ "$FIRST" == "log.sh" ]; then
             echo "✅ Copying log.sh into /tmp/ of Pod succeeded"
           else
             echo "❌ Copying log.sh into /tmp/ of Pod failed"
           fi
 
-          kubectl exec -it nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
+          kubectl exec nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
           eval "$EXEC_CMD"
-          SECOND=`kubectl exec -it nginx-pod -- /bin/sh -c 'cat /tmp/foo.log | wc -l'`
+          SECOND=`kubectl exec nginx-pod -- /bin/sh -c 'cat /tmp/foo.log | wc -l'`
           if [ "$SECOND" != "0" ]; then
             echo "✅ Executing log.sh and writing to /tmp/foo.log succeeded"
           else
