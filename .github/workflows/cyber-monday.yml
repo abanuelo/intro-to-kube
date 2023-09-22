@@ -81,7 +81,7 @@ jobs:
 
           FIRST_COPY_CMD=`sed -n '4{p;q}' backup.txt`
           EXEC_CMD=`sed -n '6{p;q}' backup.txt`
-          SECOND_COPY_CMD=`sed -n '10{p;q}' backup.txt`
+          SECOND_COPY_CMD=`sed -n '9{p;q}' backup.txt`
 
           eval "$FIRST_COPY_CMD"
           FIRST=`kubectl exec -it nginx-pod -- /bin/sh -c "ls /tmp | grep 'log.sh'"`
