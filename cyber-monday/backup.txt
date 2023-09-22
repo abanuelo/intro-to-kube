@@ -1,7 +1,8 @@
+# NOTE: For these commands your current working directory should be: 
+# /workspaces/intro-to-kube/cyber-monday
 # TODO: Enter kubectl cp command used to get `log.sh` file into the Pod
 < ANSWER HERE >
-# TODO: Enter kubectl exec command used to execute the `log.sh` in the 
-# background inside the Pod
+# TODO: Enter kubectl exec command used to execute the `log.sh` for 20 seconds
 < ANSWER HERE >
 # TODO: Enter kubectl cp command used to copy the log file from inside the
 # Pod to your current working directory
