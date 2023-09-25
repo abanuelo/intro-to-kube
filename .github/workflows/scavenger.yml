@@ -30,7 +30,7 @@ jobs:
           correct=0
 
           for i in "${!STUDENT_ARRAY[@]}"; do
-            if [ "${STUDENT_ARRAY[$index]}" == "${REAL_ARRAY[i]}" ]; then
+            if [ "${STUDENT_ARRAY[$i]}" == "${REAL_ARRAY[i]}" ]; then
               echo "✅ problem $i"
               total=$((total+1))
               correct=$((correct+1))
