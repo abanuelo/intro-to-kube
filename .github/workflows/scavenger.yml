@@ -15,9 +15,9 @@ jobs:
       - name: Checkout solution
         uses: actions/checkout@v3
         with:
-          repository: abanuelo/intro-to-kube-solutions
-          token: ${{ secrets.GH_PAT }}
+          repository: abanuelo/intro-to-kube
           path: solution
+          ref: scavenger-solution
 
       - name: Check results
         run: |
