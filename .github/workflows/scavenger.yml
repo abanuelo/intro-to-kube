@@ -15,9 +15,9 @@ jobs:
       - name: Checkout solution
         uses: actions/checkout@v3
         with:
-          repository: abanuelo/intro-to-kube-solutions
-          token: ${{ secrets.GH_PAT }}
+          repository: abanuelo/intro-to-kube
           path: solution
+          ref: scavenger-solution
 
       - name: Check results
         run: |
@@ -30,7 +30,7 @@ jobs:
           correct=0
 
           for i in "${!STUDENT_ARRAY[@]}"; do
-            if [ "${STUDENT_ARRAY[$index]}" == "${REAL_ARRAY[i]}" ]; then
+            if [ "${STUDENT_ARRAY[$i]}" == "${REAL_ARRAY[i]}" ]; then
               echo "✅ problem $i"
               total=$((total+1))
               correct=$((correct+1))
