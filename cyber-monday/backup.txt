@@ -1,9 +1,21 @@
 # NOTE: For these commands your current working directory should be: 
 # /workspaces/intro-to-kube/cyber-monday
 # TODO: Enter kubectl cp command used to get `log.sh` file into the Pod
-< ANSWER HERE >
+< ANSWER HERE > kubectl cp log.sh just-a-pod:/tmp/.
 # TODO: Enter kubectl exec command used to execute the `log.sh`
-< ANSWER HERE >
+< ANSWER HERE >  kubectl exec -it just-a-pod -- bash -c "bash /tmp/log.sh" 
 # TODO: Enter kubectl cp command used to copy the log file from inside the
 # Pod to your current working directory
-< ANSWER HERE >
+< ANSWER HERE > kubectl exec -it just-a-pod -- bash -c "tail -n 10 /tmp/foo.log"
+{"item": "USB microscope", "user": 206, "date": "2023-09-28T17:58:13Z"}
+{"item": "smartphone", "user": 228, "date": "2023-09-28T17:58:13Z"}
+{"item": "smart gloves", "user": 959, "date": "2023-09-28T17:58:13Z"}
+{"item": "VR headset", "user": 650, "date": "2023-09-28T17:58:13Z"}
+{"item": "VR treadmill", "user": 584, "date": "2023-09-28T17:58:13Z"}
+{"item": "solar panel", "user": 429, "date": "2023-09-28T17:58:13Z"}
+{"item": "wireless barcode scanner", "user": 864, "date": "2023-09-28T17:58:13Z"}
+{"item": "robotic prosthetic", "user": 254, "date": "2023-09-28T17:58:13Z"}
+{"item": "Bluetooth headphones", "user": 89, "date": "2023-09-28T17:58:13Z"}
+{"item": "graphics card", "user": 810, "date": "2023-09-28T17:58:13Z"}
+
+kubectl cp just-a-pod:/tmp/foo.log just-a-pod-foo.log
