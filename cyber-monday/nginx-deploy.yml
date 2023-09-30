@@ -3,6 +3,19 @@ kind: Deployment
 metadata:
   name: nginx-deployment
 spec:
+  replicas: 3  # a. Add 3 replicas
+  selector:
+    matchLabels:
+      app: just-a-pod  # b. Add a selector that matches labels `just-a-pod`
+  template:
+    metadata:
+      labels:
+        app: just-a-pod
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+
 # TODO:
 # - Add replicas
 # - Add a selector that matches labels `just-a-pod`
