@@ -6,7 +6,7 @@ metadata:
     app: just-a-pod
 spec:
   containers:
-  - name: nginx-pod
-    image: nginx:latest
-    ports:
-    - containerPort: 80
+    - name: nginx-pod
+      image: nginx:latest
+      ports:
+      - containerPort: 80
