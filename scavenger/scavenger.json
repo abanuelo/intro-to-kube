@@ -1,12 +1,12 @@
 {
   "mark-i": {
-    "0": "Put answer here",
-    "1": "Put answer here",
-    "2": "Put answer here",
-    "3": "Put answer here",
-    "4": "Put answer here",
-    "5": "Put answer here"
+    "0": "12",
+    "1": "6",
+    "2": "1",
+    "3": "2",
+    "4": "1",
+    "5": "3"
   },
-  "mark-ii": { "6": "Put answer here", "7": "Put answer here" },
-  "mark-iii": { "8": "Put answer here", "9": "Put answer here" }
+  "mark-ii": { "6": "POSTGRES_PASSWORD", "7": "container "nginx" in pod "nginx" is waiting to start: trying and failing to pull image" },
+  "mark-iii": { "8": "env: - name: POSTGRES_PASSWORD value: supersecret", "9": "image: nginx" }
 }
