@@ -3,6 +3,20 @@ kind: Deployment
 metadata:
   name: nginx-deployment
 spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-pod
+  template:
+    metadata:
+      labels:
+        app: nginx-pod
+    spec:
+      containers:
+      - name: just-a-pod
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
 # TODO:
 # - Add replicas
 # - Add a selector that matches labels `just-a-pod`
