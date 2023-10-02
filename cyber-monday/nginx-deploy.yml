@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: just-a-pod
-        image: nginx:1.14.2
+        image: nginx:latest
         ports:
         - containerPort: 80
 # TODO:
