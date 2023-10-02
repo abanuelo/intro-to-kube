@@ -6,4 +6,4 @@ kubectl cp log.sh nginx-pod:/tmp
 kubectl exec -it nginx-pod -- /bin/bash -c "./tmp/log.sh"
 # TODO: Enter kubectl cp command used to copy the log file from inside the
 # Pod to your current working directory
-cp nginx-pod:/tmp/foo.log workspaces/intro-to-kube/cyber-monday/foo.log
+cp nginx-pod:/tmp/foo.log foo.log
