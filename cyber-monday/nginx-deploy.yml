@@ -6,11 +6,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: nginx-pod
+      app: just-a-pod
   template:
     metadata:
       labels:
-        app: nginx-pod
+        app: just-a-pod
     spec:
       containers:
       - name: just-a-pod
