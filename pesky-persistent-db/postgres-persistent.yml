@@ -13,11 +13,6 @@ spec:
     - ReadWriteMany
   hostPath: 
     path: "/mnt/data"
-  # TODO: Fill in the persistent volume specifications:
-  # a. storageClassName as manual
-  # b. capacity as 5Gi
-  # c. accessModes as ReadWriteMany
-  # d. hostPath as /mnt/data
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -32,7 +27,3 @@ spec:
   resources:
     requests: 
       storage: 5Gi
-  # TODO: Fill in the persistent volume claim specifications:
-  # a. storageClassName as manual
-  # b. accessModes as ReadWriteMany
-  # c. resource requests for storage to be 5Gi
