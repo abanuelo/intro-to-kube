@@ -48,6 +48,7 @@ jobs:
       # PERSISTENT VOLUME CHECKS
       - name: Check if correct Persistent Volume accessMode applied
         run: |
+          kubectl describe pvc postgres
           PV_ACCESS_MODE=`kubectl describe pv postgres | grep "Access Modes" | grep RWX -o`
           if [ "$PV_ACCESS_MODE" == "RWX" ]; then
             echo "✅ Access Mode for Persistent Volume is correct"
