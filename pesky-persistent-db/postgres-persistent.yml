@@ -6,11 +6,13 @@ metadata:
     type: local
     app: postgres
 spec:
-  # TODO: Fill in the persistent volume specifications:
-  # a. storageClassName as manual
-  # b. capacity as 5Gi
-  # c. accessModes as ReadWriteMany
-  # d. hostPath as /mnt/data
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath: 
+    path: /mnt/data
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -19,7 +21,9 @@ metadata:
   labels:
     app: postgres
 spec:
-  # TODO: Fill in the persistent volume claim specifications:
-  # a. storageClassName as manual
-  # b. accessModes as ReadWriteMany
-  # c. resource requests for storage to be 5Gi
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany  
+  resources:
+    requests: 
+      storage: 5Gi
