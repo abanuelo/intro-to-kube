@@ -9,3 +9,6 @@ data:
   # POSTGRES_DB as postgresdb
   # POSTGRES_USER as admin
   # POSTGRES_PASSWORD as psltest
+  POSTGRES_DB: postgresdb
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: psltest
