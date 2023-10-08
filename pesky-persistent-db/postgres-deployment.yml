@@ -20,16 +20,26 @@ spec:
             - containerPort: 5432
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: postgredb # This should match the volume name in your PersistentVolumeClaim
+              name: postgredb 
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets # This should be the name of your secret
-                  key: postgres-password # This should be the key for the password in your secret
+                  name: postgres-secrets 
+                  key: postgres-password 
           # TODO: Add a reference to the ConfigMap for environment variables
       volumes:
-        - name: postgredb # This should match the name used in volumeMounts
+        - name: postgredb 
           persistentVolumeClaim:
-            claimName: postgres-pv-claim # This should match the name of your PersistentVolumeClaim
-
+            claimName: postgres-pv-claim 
+env:
+  - name: POSTGRES_DB
+    valueFrom:
+      configMapKeyRef:
+        name: postgres-config
+        key: postgres_db
+  - name: POSTGRES_USER
+    valueFrom:
+      configMapKeyRef:
+        name: postgres-config
+        key: postgres_user
