@@ -5,7 +5,7 @@ metadata:
   labels:
     app: postgres
 data:
-  # TODO: Configure the following values
+  # TODO: Configure the following values (note: I left in for troubleshooting)
   # POSTGRES_DB as postgresdb
   # POSTGRES_USER as admin
   # POSTGRES_PASSWORD as psltest

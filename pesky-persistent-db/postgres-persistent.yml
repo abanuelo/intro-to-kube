@@ -6,7 +6,7 @@ metadata:
     type: local
     app: postgres
 spec:
-  # TODO: Fill in the persistent volume specifications:
+  # TODO: Fill in the persistent volume specifications: (NOTE: I left in for troubleshooting)
   # a. storageClassName as manual
   # b. capacity as 5Gi
   # c. accessModes as ReadWriteMany
@@ -36,9 +36,3 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
-
-
-
-
-
