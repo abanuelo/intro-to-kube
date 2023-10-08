@@ -27,19 +27,20 @@ spec:
                 secretKeyRef:
                   name: postgres-secrets 
                   key: postgres-password 
+          #test changes
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_db
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_user
           # TODO: Add a reference to the ConfigMap for environment variables
       volumes:
         - name: postgredb 
           persistentVolumeClaim:
             claimName: postgres-pv-claim 
-env:
-  - name: POSTGRES_DB
-    valueFrom:
-      configMapKeyRef:
-        name: postgres-config
-        key: postgres_db
-  - name: POSTGRES_USER
-    valueFrom:
-      configMapKeyRef:
-        name: postgres-config
-        key: postgres_user
+
