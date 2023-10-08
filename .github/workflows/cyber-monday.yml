@@ -104,7 +104,7 @@ jobs:
           eval "$SECOND_COPY_CMD"
           THIRD=`ls | grep foo.log`
           if [ "$THIRD" == "foo.log" ]; then
-            echo "✅ Copying /tmp/log.sh from Pod to local machine succeeded"
+            echo "✅ Copying /tmp/foo.log from Pod to local machine succeeded"
           else
-            echo "❌ Copying /tmp/log.sh from Pod to local machine failed"
+            echo "❌ Copying /tmp/foo.log from Pod to local machine failed"
           fi
