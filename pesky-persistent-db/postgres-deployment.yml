@@ -29,4 +29,3 @@ spec:
         - name: postgresdb 
           persistentVolumeClaim:
             claimName: postgres-pv-claim 
-
