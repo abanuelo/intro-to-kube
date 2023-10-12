@@ -3,15 +3,18 @@ kind: ClusterRole
 metadata:
   name: KubeAdmin
 rules:
-# TODO:
-# target all resources with full access
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["get", "watch", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: KubeAdminClusterRoleBinding
 subjects:
-# TODO: add Jesus as target user
-# note: this is case sensitive
+  - kind: User 
+    name: Jesus
 roleRef:
-# TODO: add target role to KubeAdmin
+  kind: Role
+  name: KubeAdmin
+  apiGroup: rbac.authorization.k8s.io
