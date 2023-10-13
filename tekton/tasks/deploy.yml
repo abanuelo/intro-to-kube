@@ -4,6 +4,8 @@ metadata:
   name: deploy
 spec:
   params:
+    - name: REPO_URL
+      type: string
     - name: NAMESPACE
       type: string
     - name: IMAGE
@@ -16,3 +18,15 @@ spec:
     #    to the ns specified by the paramsl; use image lachlanevenson/k8s-kubectl
     # 3. Update the image for the deployment by running: `kubectl set image deployment/nginx-deployment nginx=<IMAGE-NAME> -n=<NAMESPACE>`
     #    specified by the image in params and ns specified in params; use image lachlanevenson/k8s-kubectl
+    - name: clone-repo
+      image: alpine/git
+      script: |
+        git clone $(params.REPO_URL) /workspace/source
+    - name: kubectl-apply
+      image: lachlanevenson/k8s-kubectl
+      script: |     
+        kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml -n $(params.NAMESPACE)
+    - name: update-image
+      image: lachlanevenson/k8s-kubectl
+      script: |
+        kubectl set image deployment/nginx-deployment nginx=$(params.IMAGE) -n $(params.NAMESPACE)

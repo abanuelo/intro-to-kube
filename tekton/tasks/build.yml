@@ -13,3 +13,23 @@ spec:
     # 2. Make /workspace/source your workDir and run `npm install`
     # 3. Make /workspace/source your workDir and run `npm test`
     # Hint: for step 2 & 3 you can use the `image: node` to run npm commands
+    - name: git-clone
+      image: alpine/git
+      script: |
+        git clone $(params.REPO_URL) --depth 1 /workspace/source
+    - name: npm-install
+      image: node
+      command:
+        - /bin/sh
+        - -c
+      args:
+        - npm install
+      workingDir: /workspace/source
+    - name: npm-test 
+      image: node
+      command:
+        - /bin/sh
+        - -c
+      args:
+        - npm test
+      workingDir: /workspace/source

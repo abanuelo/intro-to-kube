@@ -18,3 +18,36 @@ spec:
     # 3. For the deploy task add these env variables:
     #   - NAMESPACE = default
     #   - IMAGE: nginx:latest
+    #   - REPO_URL: https://github.com/abanuelo/intro-to-kube.git
+    - name: build
+      taskRef:
+        name: build
+      params:
+        - name: REPO_URL
+          value: https://github.com/expressjs/express.git
+    - name: push
+      taskRef:
+        name: push
+      params:
+        - name: IMAGE_NAME
+          value: nginx:latest
+        - name: DOCKERFILE_PATH
+          value: /workspace/source
+        - name: CONTEXT_PATH
+          value: /workspace/source
+        - name: CONTAINER_REGISTRY
+          value: registry.example.com
+        - name: REGISTRY_USERNAME
+          value: Bob
+        - name: REGISTRY_PASSWORD
+          value: password1234
+    - name: deploy
+      taskRef:
+        name: deploy
+      params:
+        - name: NAMESPACE
+          value: default
+        - name: IMAGE
+          value: "nginx:latest"
+        - name: REPO_URL
+          value: https://github.com/abanuelo/intro-to-kube.git
