@@ -7,3 +7,21 @@ spec:
   # TODO:
   # Define ingress
   # Define egress
+  podSelector:
+    matchLabels:
+      name: nginx
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from: 
+      - namespaceSelector:
+          matchLabels:
+            name: namespace-b
+  egress:
+    - to:
+      - namespaceSelector:
+          matchExpressions:
+          - key: namespace
+            operator: In
+            values: ["namespace-b", "namespace-c"]
