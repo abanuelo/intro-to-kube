@@ -4,24 +4,14 @@ metadata:
   name: network-policy-for-namespace-a
   namespace: namespace-a
 spec:
-  # TODO:
-  # Define ingress
-  # Define egress
-  podSelector:
-    matchLabels:
-        name: nginx
+  podSelector: {}
   policyTypes:
-    - Ingress
-    - Egress
+  - Ingress
+  - Egress
   ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: namespace-b
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: namespace-b
   egress:
-    - to:
-        - namespaceSelector:
-            matchExpressions:
-            - key: namespace
-              operator: In
-              values: ["namespace-b", "namespace-c"]
+  - {}
