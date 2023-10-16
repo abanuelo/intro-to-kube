@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build
+spec:
+  params:
+    - name: REPO_URL
+      type: string
+  steps:
+    # TODO
+    # Add the following steps to your Task:
+    # 1. Clone the github repo from the params into a directory called: /workspace/source
+    # 2. Make /workspace/source your workDir and run `npm install`
+    # 3. Make /workspace/source your workDir and run `npm test`
+    # Hint: for step 2 & 3 you can use the `image: node` to run npm commands

@@ -1,0 +1,249 @@
+name: Tekton
+on:
+  push:
+    branches:
+      - "tekton-**"
+
+jobs:
+  scavenger:
+    name: Tekton 🛠️
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@master
+        id: minikube
+        with:
+          driver: docker
+          memory: 2048
+      
+      - name: Install Tekton dependencies
+        run: |
+          cd ./tekton
+          bash setup.sh
+          sleep 20
+      
+      - name: Build Task
+        run: |
+          cd ./tekton
+          kubectl apply -f ./tasks/build.yml
+
+          # reason why its 5 and not 3 is output includes `Steps: ` and new line
+          NUM_STEPS=`tkn task describe build | grep Steps -A 10 | wc -l`
+          if [ "$NUM_STEPS" == "5" ]; then
+            echo "✅ build is 3 steps"
+          else
+            echo "❌ build is not 3 steps"
+          fi
+
+          CLONE=`kubectl describe task build | grep 'git clone' -o`
+          if [ "$CLONE" == "git clone" ]; then
+            echo "✅ git clone step included"
+          else
+            echo "❌ git clone step not included"
+          fi
+
+          INSTALL=`kubectl describe task build | grep 'npm install' -o`
+          if [ "$INSTALL" == "npm install" ]; then
+            echo "✅ npm install step included"
+          else
+            echo "❌ npm install step not included"
+          fi
+
+          TEST=`kubectl describe task build | grep 'npm test' -o`
+          if [ "$TEST" == "npm test" ]; then
+            echo "✅ npm test step included"
+          else
+            echo "❌ npm test step not included"
+          fi
+      
+      - name: Push Task
+        run: |
+          cd ./tekton
+          kubectl apply -f ./tasks/push.yml
+
+      - name: Deploy Task
+        run: |
+          cd ./tekton
+          kubectl apply -f ./tasks/deploy.yml
+
+          NUM_STEPS=`tkn task describe deploy | grep Steps -A 10 | wc -l`
+          if [ "$NUM_STEPS" == "5" ]; then
+            echo "✅ deploy is 3 steps"
+          else
+            echo "❌ deploy is not 3 steps"
+          fi
+
+          CLONE=`kubectl describe task deploy | grep 'git clone' -o`
+          if [ "$CLONE" == "git clone" ]; then
+            echo "✅ git clone step included"
+          else
+            echo "❌ git clone step not included"
+          fi
+
+          APPLY=`kubectl describe task deploy | grep 'kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml' -o`
+          if [ "$APPLY" == "kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml" ]; then
+            echo "✅ kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml step included"
+          else
+            echo "❌ kubectl apply -f /workspace/source/tekton/k8s/nginx-deployment.yml step not included"
+          fi
+
+          SET_IMAGE=`kubectl describe task deploy | grep 'kubectl set image' -o`
+          if [ "$SET_IMAGE" == "kubectl set image" ]; then
+            echo "✅ kubectl set image step included"
+          else
+            echo "❌ kubectl set image step not included"
+          fi
+      
+      - name: Build-Push-Deploy Pipeline
+        run: |
+          cd ./tekton
+          kubectl apply -f ./build-push-deploy-pipeline.yml
+
+          NUM_STEPS=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | wc -l`
+          if [ "$NUM_STEPS" == "6" ]; then
+            echo "✅ pipeline has 3 tasks"
+          else
+            echo "❌ pipeline does not have 3 tasks"
+          fi
+
+          NUM_STEPS=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | wc -l`
+          if [ "$NUM_STEPS" == "6" ]; then
+            echo "✅ pipeline has 3 tasks"
+          else
+            echo "❌ pipeline does not have 3 tasks"
+          fi
+
+          FIRST=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==4 {print; exit}' | grep 'build' -o | tr -d '\n'`
+          if [ "$FIRST" == "buildbuild" ]; then
+            echo "✅ build is first task in pipeline"
+          else
+            echo "❌ build is not first task in pipeline"
+          fi
+
+          SECOND=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==5 {print; exit}' | grep 'push' -o | tr -d '\n'`
+          if [ "$SECOND" == "pushpush" ]; then
+            echo "✅ push is second task in pipeline"
+          else
+            echo "❌ push is not second task in pipeline"
+          fi
+
+          THIRD=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==6 {print; exit}' | grep 'deploy' -o | tr -d '\n'`
+          if [ "$THIRD" == "deploydeploy" ]; then
+            echo "✅ deploy is third task in pipeline"
+          else
+            echo "❌ deploy is not third task in pipeline"
+          fi
+
+          # ENV VARIABLES FOR BUILD
+          BUILD_ENV=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==4 {print; exit}' | grep 'REPO_URL: https://github.com/expressjs/express.git' -o`
+          if [ "$BUILD_ENV" == "REPO_URL: https://github.com/expressjs/express.git" ]; then
+            echo "✅ build task has correct REPO_URL"
+          else
+            echo "❌ build task does not have correct REPO_URL"
+          fi
+
+          # ENV VARIABLES FOR PUSH
+          PUSH_ENV_1=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==5 {print; exit}' |  grep 'IMAGE_NAME: nginx:latest' -o`
+          if [ "$PUSH_ENV_1" == "IMAGE_NAME: nginx:latest" ]; then
+            echo "✅ push task has correct IMAGE_NAME"
+          else
+            echo "❌ push task does not have correct IMAGE_NAME"
+          fi
+          PUSH_ENV_2=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==5 {print; exit}' |  grep 'DOCKERFILE_PATH: /workspace/source' -o`
+          if [ "$PUSH_ENV_2" == "DOCKERFILE_PATH: /workspace/source" ]; then
+            echo "✅ push task has correct DOCKERFILE_PATH"
+          else
+            echo "❌ push task does not have correct DOCKERFILE_PATH"
+          fi
+          PUSH_ENV_3=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==5 {print; exit}' |  grep 'CONTEXT_PATH: /workspace/source' -o`
+          if [ "$PUSH_ENV_3" == "CONTEXT_PATH: /workspace/source" ]; then
+            echo "✅ push task has correct CONTEXT_PATH"
+          else
+            echo "❌ push task does not have correct CONTEXT_PATH"
+          fi
+          PUSH_ENV_4=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==5 {print; exit}' |  grep 'CONTAINER_REGISTRY: registry.example.com' -o`
+          if [ "$PUSH_ENV_4" == "CONTAINER_REGISTRY: registry.example.com" ]; then
+            echo "✅ push task has correct CONTAINER_REGISTRY"
+          else
+            echo "❌ push task does not have correct CONTAINER_REGISTRY"
+          fi
+          PUSH_ENV_5=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==5 {print; exit}' |  grep 'REGISTRY_USERNAME: Bob' -o`
+          if [ "$PUSH_ENV_5" == "REGISTRY_USERNAME: Bob" ]; then
+            echo "✅ push task has correct REGISTRY_USERNAME"
+          else
+            echo "❌ push task does not have correct REGISTRY_USERNAME"
+          fi
+          PUSH_ENV_6=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==5 {print; exit}' |  grep 'REGISTRY_PASSWORD: password1234' -o`
+          if [ "$PUSH_ENV_6" == "REGISTRY_PASSWORD: password1234" ]; then
+            echo "✅ push task has correct REGISTRY_PASSWORD"
+          else
+            echo "❌ push task does not have correct REGISTRY_PASSWORD"
+          fi
+
+          # ENV VARIABLES FOR DEPLOY
+          DEPLOY_ENV_1=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==6 {print; exit}' | grep 'NAMESPACE: default' -o`
+          if [ "$DEPLOY_ENV_1" == "NAMESPACE: default" ]; then
+            echo "✅ deploy task has correct NAMESPACE"
+          else
+            echo "❌ deploy task does not have correct NAMESPACE"
+          fi
+          DEPLOY_ENV_2=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==6 {print; exit}' | grep 'IMAGE: nginx:latest' -o`
+          if [ "$DEPLOY_ENV_2" == "IMAGE: nginx:latest" ]; then
+            echo "✅ deploy task has correct IMAGE"
+          else
+            echo "❌ deploy task does not have correct IMAGE"
+          fi
+          DEPLOY_ENV_3=`tkn pipeline describe build-push-deploy | grep 'Tasks' -A 10 | awk 'NR==6 {print; exit}' | grep 'REPO_URL: https://github.com/abanuelo/intro-to-kube.git' -o`
+          if [ "$DEPLOY_ENV_3" == "REPO_URL: https://github.com/abanuelo/intro-to-kube.git" ]; then
+            echo "✅ deploy task has correct REPO_URL"
+          else
+            echo "❌ deploy task does not have correct REPO_URL"
+          fi
+
+      - name: Build-Push-Deploy Pipeline
+        run: |
+          cd ./tekton
+          kubectl apply -f ./build-push-deploy-pipelinerun.yml
+
+          sleep 100
+
+          tkn pipelinerun describe build-push-deploy
+
+          SUCCESS_FULL=`tkn pipelineruns describe build-push-deploy | grep 'Status' -A 4 | grep 'Succeeded' -o`
+          if [ "$SUCCESS_FULL" == "Succeeded" ]; then
+            echo "✅ build-push-deploy succeeded"
+          else
+            echo "❌ build-push-deploy errored"
+          fi
+
+          SUCCESS_BUILD=`tkn pipelineruns describe build-push-deploy | grep 'build-push-deploy-build' | grep 'Succeeded' -o`
+          if [ "$SUCCESS_BUILD" == "Succeeded" ]; then
+            echo "✅ build-push-deploy build task succeeded"
+          else
+            echo "❌ build-push-deploy build task errored"
+          fi
+
+          SUCCESS_PUSH=`tkn pipelineruns describe build-push-deploy | grep 'build-push-deploy-push' | grep 'Succeeded' -o`
+          if [ "$SUCCESS_PUSH" == "Succeeded" ]; then
+            echo "✅ build-push-deploy push task succeeded"
+          else
+            echo "❌ build-push-deploy push task errored"
+          fi
+
+          SUCCESS_DEPLOY=`tkn pipelineruns describe build-push-deploy | grep 'build-push-deploy-deploy' | grep 'Succeeded' -o`
+          if [ "$SUCCESS_DEPLOY" == "Succeeded" ]; then
+            echo "✅ build-push-deploy deloy task succeeded"
+          else
+            echo "❌ build-push-deploy deploy task errored"
+          fi
+
+         
+
+
+
+
+        
+

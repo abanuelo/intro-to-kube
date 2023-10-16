@@ -110,6 +110,12 @@ jobs:
           if [ "$DEPLOYMENT_CONFIGMAP" == "postgres-config" ]; then
             echo "✅ Deployment ConfigMap setup is correct"
           else
+            IN_SECRET_INSTEAD=`kubectl describe deployment postgres | grep 'Environment:' -A 2 | grep 'POSTGRES_PASSWORD' | grep 'postgres-secret' -o`
+            if [ "$IN_SECRET_INSTEAD" == "postgres-secret" ]; then
+              echo "✅ [CHALLENGE] - Deployment Secret Setup is correct"
+            else
+              echo ""❌ [CHALLENGE] - Deployment Secret not setup yet""
+            fi
             echo "❌ Deployment ConfigMap setup is incorrect"
           fi
       - name: Check if Deployment uses Persistent Volume Claim correctly

@@ -16,8 +16,9 @@ We're counting on you to configure a highly available web app that can handle th
 
 We will:
 
-- Deploying multiple [nginx containers](https://hub.docker.com/_/nginx) 🐳 using a Deployment with 3 ReplicaSets and a CPU resource request of 100m. This will ensure our app is ready to handle the surge!
-- Add a HorizontalPodAutoscaler to wrap around our Deployment and autoscale the replicas based on average CPU utilization. We will try to maintain an average CPU utilization of 50% and scaling up an down when necessary. When things get 🔥, it'll summon reinforcements, increasing replicas up to 20! We'll set a minimum of 1 replica, so our app is always up and running.
+- Deploy a single nginx Pod with containerPort 80 and label `just-a-pod`
+- Deploy multiple [nginx containers](https://hub.docker.com/_/nginx) 🐳 using a Deployment with 3 ReplicaSets. The nginx containers should also have a containerPort of 80 and a label `just-a-pod`.
+- Use `kubectl cp` and `kubectl exec` commands to support an automated script to take backups of a log file within our pods and push it into our local machine.
 
 Get ready to configure this epic setup, and let's make this Cyber Monday the stuff of legends! 🎆 Best of luck, and let's rock this!
 
@@ -26,8 +27,8 @@ Get ready to configure this epic setup, and let's make this Cyber Monday the stu
 Start your minikube and let the games begin!
 
 ```
- minikube start --memory 2048 --cpus 2 --vm-driver=docker
- minikube addons enable metrics-server
+ minikube start
+ 
  cd cyber-monday
 ```
 
@@ -49,62 +50,51 @@ git push -u origin cyber-<github-username>
 
 ## Main Project
 
-0. Lucky for you, some of your teammates, have already started writing a Deployment YAML called `nginx-deploy.yml`. Please refer to [K8s Deployment documentation](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) as needed. Complete the YAML file to
+0. Let's start simple. Create a single nginx pod with
+   > a. containerPort 80 
+   
+   > b. label `just-a-pod` from the nginx latest image
+   
+   Complete, `nginx-pod.yml`. Run the command below to test or see [Testing](#testing).
 
-   > a. Spin up an nginx container
+   ```
+   kubectl apply -f nginx-pod.yml
+   ```
 
-   > b. Set CPU resource request to 100m
+1. Now we are going to take that same pod but wrap it in a deployment so that 3 Replicas of that Pod exist at any given time. Please refer to [K8s Deployment documentation](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) as needed. Complete the YAML file to:
 
-   > c. Add CPU resource limit to 100m and memory to 64Mi
+   > a. Add 3 replicas
 
-1. Once you feel confident in your code run the snippet below. It will create your Deployment in your default namespace. To test see [Testing](#testing).
+   > b. Add a selector that matches labels `just-a-pod`
+
+   > c. Add a template for the nginx container used in `nginx-pod.yml`
+
+      Once you feel confident in your code run the snippet below or see [Testing](#testing).
 
    ```
    kubectl apply -f nginx-deploy.yml
    ```
 
-2. An intern started working on building out the HorizontalPodAutoscaler YAML called `nginx-scaler.yml`. Please refer to [K8s HPA Documentation](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/) as needed. Complete the YAML file to:
+2. As users start pinging these pods (which won't happen yet fortunately for us 😊), we want to collect metadata around what items they are purchasing for Cyber Monday. Since our logging and metrics aren't set in place yet, we are going to try to collect this metadata by supporting an automated script to take backups of a logfile within our pods and push it into our local machine. To do so we will:
 
-   > a. Set target to nginx deployment
+      a. Copy our logging script `log.sh` into our pod, executing it, and observing it write metadata to `/tmp/foo.log` to simulate users pinging the pods and data getting logged.
 
-   > b. Set minimum replicas to 1
+      b. Run a kubectl command to copy the `/tmp/foo.log` file to our local machine's working directory `/workspaces/intro-to-kube/cyber-monday`
 
-   > c. Set maximum replicas to 20
+   To do so, we will be using the [`kubectl cp`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#cp) command to copy files to and from our pods and a [`kubectl exec`](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#exec) command to execute the `log.sh` script.
 
-   > d. Set target CPU utilization to 50%
+3. Let's start on our single Pod created from the `nginx-pod.yml`. Run the appropriate `kubectl cp` to copy over the `log.sh` to the Pod's `/tmp/` directory. Write this command in the `backup.txt`.
 
-3. Once you feel confident in your code run the snippet below. It will attach an HPA to your Deployment and just enable autoscaling of our web application. To test see [Testing](#testing).
-
-   ```
-   kubectl apply -f nginx-scaler.yml
-   ```
-
-4. Let's test see the results of your autoscaling by increasing the load. Run the snippet of code below and visualize load scale the pods by running `kubectl get hpa nginx --watch`. If you see pods scale up as a result, then congratulations looks like your job is done!
+4. Now let's run the `log.sh` script inside the Pod using the appropriate `kubectl exec` command. Before this let's just give the `/tmp/log.sh` proper permissions and touch the `/tmp/foo.log` file by running:
 
    ```
-   # First find a pod IP to hit by running
-   kubectl get pods -o wide
-
-   # Replace the IP in the curl command
-   kubectl run -i --tty load-generator --rm --image=nginx --restart=Never -- /bin/sh -c "while sleep 0.001; do curl -v <ENTER POD IP>; done"
-
-   # In another terminal watch CPU utilization change
-   kubectl get hpa nginx --watch
-
-   # We may need to delete this pod to simulate this since we don't have a service
+   kubectl exec nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
    ```
+
+   Write your command in `backup.txt`. To verify if this worked, you can use a `kubectl exec` command to cat the contents of that file using: `tail -n 10 /tmp/foo.log`.
+
+5. Last but not least, let's write a `kubectl cp` command to copy the `/tmp/foo.log` file from inside the Pod onto our machine's current working directory. You can verify it works when the file `foo.log` appears in your current working directory. Write this command inside the `backup.txt` file.
 
 ## Challenge
+0. We have added the automated scripting to our Pod created by `nginx-pod.yml`. However, we have not added that same logic to the Pods encapsulated by our Deployment. For this challenge, repeat the same steps for all pods in the deployment, but ensure that when copying the log files to our local machine, they are prefixed by the Pod's unique identifier.
 
-If the above steps have been completed, we encourage you to do some more thorough testing by adding a service. Note that in step 4 above, we needed to find the specific IP of a pod in order to determine if our HPA was working. Instead, we can add a [K8s Service](https://kubernetes.io/docs/concepts/services-networking/service/) that talks to our Deployment. By adding a service we can communicate to any given pod in our Deployment. Work on the `nginx-service.yml` file to add a service. To test your changes run the following snippet of code below:
-
-```
-# apply the service
-kubectl apply -f nginx-service.yml
-
-# minikube will export the service url, find yours by running
-minikube service nginx --url
-
-# Use that url to run this curl command:
-curl -v $(minikube service nginx --url)
-```

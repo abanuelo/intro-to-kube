@@ -19,86 +19,92 @@ jobs:
           driver: docker
           memory: 2048
           cpus: 2
-          addons: ingress, metrics-server
+      
+      - name: Check nginx-pod YAML config
+        run: |
+          kubectl apply -f ./cyber-monday/nginx-pod.yml
+          sleep 10
+          IMAGE_NAME=`kubectl describe pod nginx-pod | grep 'Image: ' | grep 'nginx:latest' -o`
+          if [ "$IMAGE_NAME" == "nginx:latest" ]; then
+            echo "✅ Image name for pod is correct"
+          else
+            echo "❌ Image name for pod is incorrect"
+          fi
 
-      - name: Apply the kubectl config objects
+          LABELS=`kubectl describe pod nginx-pod | grep 'Labels: ' | grep 'just-a-pod' -o`
+          if [ "$LABELS" == "just-a-pod" ]; then
+            echo "✅ Labels for pod is correct"
+          else
+            echo "❌ Labels for pod is incorrect"
+          fi
+
+          CONTAINER_PORT=`kubectl describe pod nginx-pod | grep 'Port: ' -m 1 | grep '80' -o`
+          if [ "$CONTAINER_PORT" == "80" ]; then
+            echo "✅ Container Port for pod is correct"
+          else
+            echo "❌ Container Port for pod is incorrect"
+          fi
+      - name: Check nginx-deployment YAML config
         run: |
           kubectl apply -f ./cyber-monday/nginx-deploy.yml
-          kubectl apply -f ./cyber-monday/nginx-scaler.yml
-      - name: Check if correct container image applied to deployment
-        run: |
-          IMAGE_NAME=`kubectl describe deployment nginx | grep 'Pod Template' -A 10 | grep 'Image:' | grep 'nginx' -o`
-          if [ "$IMAGE_NAME" == "nginx" ]; then
+          sleep 10
+          IMAGE_NAME=`kubectl describe deployment nginx | grep 'Pod Template' -A 10 | grep 'Image:' | grep 'nginx:latest' -o`
+          if [ "$IMAGE_NAME" == "nginx:latest" ]; then
             echo "✅ Image name for deployment is correct"
           else
             echo "❌ Image name for deployment is incorrect"
           fi
-      - name: Check if correct CPU resource request applied to deployment
-        run: |
-          CPU_REQUEST=`kubectl describe deployment nginx | grep 'Requests' -A 3 | grep 'cpu' | grep '100m' -o`
-          if [ "$CPU_REQUEST" == "100m" ]; then
-            echo "✅ CPU request for deployment is correct"
+
+          REPLICAS=`kubectl describe deployment nginx | grep 'Replicas: ' | grep '3 available' -o`
+          if [ "$REPLICAS" == "3 available" ]; then
+            echo "✅ Replicas for deployment is correct"
           else
-            echo "❌ CPU request for deployment is incorrect"
+            echo "❌ Replicas for deployment is incorrect"
           fi
 
-      - name: Check if correct CPU resource limit and memory applied
-        run: |
-          LIMIT_CPU=`kubectl describe deployment nginx | grep 'Limits' -A 3 | grep 'cpu' | grep '100m' -o`
-          LIMIT_MEM=`kubectl describe deployment nginx | grep 'Limits' -A 3 | grep 'memory' | grep '64Mi' -o`
-          if [ "$LIMIT_CPU" == "100m" ]; then
-            echo "✅ CPU limit for deployment is correct"
+          SELECTOR=`kubectl describe deployment nginx | grep 'Selector: ' | grep 'just-a-pod' -o`
+          if [ "$SELECTOR" == "just-a-pod" ]; then
+            echo "✅ Selector for deployment is correct"
           else
-            echo "❌ CPU limit for deployment is incorrect"
-          fi
-          if [ "$LIMIT_MEM" == "64Mi" ]; then
-            echo "✅ memory limit for deployment is correct"
-          else
-            echo "❌ memory limit for deployment is incorrect"
+            echo "❌ Selector for deployment is incorrect"
           fi
 
-      - name: Check if hpa sets target to nginx deployment
-        run: |
-          TARGET=`kubectl describe hpa nginx | grep 'Reference' | grep 'Deployment/nginx' -o`
-          if [ "$TARGET" == "Deployment/nginx" ]; then
-            echo "✅ Target for hpa is correct"
+          CONTAINER_PORT=`kubectl describe deployment nginx | grep 'Port: ' -m 1 | grep '80' -o`
+          if [ "$CONTAINER_PORT" == "80" ]; then
+            echo "✅ Container Port for deployment is correct"
           else
-            echo "❌ Target for hpa is incorrect"
+            echo "❌ Container Port for deployment is incorrect"
+          fi
+      - name: Check backup.txt file for kubectl cp and kubectl exec commands
+        run: |
+          cd cyber-monday
+
+          FIRST_COPY_CMD=`sed -n '4{p;q}' backup.txt`
+          EXEC_CMD=`sed -n '6{p;q}' backup.txt`
+          SECOND_COPY_CMD=`sed -n '9{p;q}' backup.txt`
+
+          eval "$FIRST_COPY_CMD"
+          FIRST=`kubectl exec nginx-pod -- /bin/sh -c "ls /tmp | grep 'log.sh'"`
+          if [ "$FIRST" == "log.sh" ]; then
+            echo "✅ Copying log.sh into /tmp/ of Pod succeeded"
+          else
+            echo "❌ Copying log.sh into /tmp/ of Pod failed"
           fi
 
-      - name: Check if hpa sets min replicas to 1 and max replicas to 20
-        run: |
-          MIN_REPLICAS=`kubectl describe hpa nginx | grep 'Min replicas' | grep '1' -o`
-          MAX_REPLICAS=`kubectl describe hpa nginx | grep 'Max replicas' | grep '20' -o`
-          if [ "$MIN_REPLICAS" == "1" ]; then
-            echo "✅ Min replicas for hpa is correct"
+          kubectl exec nginx-pod -- /bin/sh -c "chmod 777 /tmp/log.sh && touch /tmp/foo.log"
+          eval "$EXEC_CMD"
+          SECOND=`kubectl exec nginx-pod -- /bin/sh -c 'cat /tmp/foo.log | wc -l'`
+          echo "$SECOND"
+          if [ "$SECOND" != "0" ]; then
+            echo "✅ Executing log.sh and writing to /tmp/foo.log succeeded"
           else
-            echo "❌ Min replicas for hpa is incorrect"
-          fi
-          if [ "$MAX_REPLICAS" == "20" ]; then
-            echo "✅ Max replicas for hpa is correct"
-          else
-            echo "❌ Max replicas for hpa is incorrect"
+            echo "❌ Executing log.sh and writing to /tmp/foo.log failed"
           fi
 
-      - name: Check if hpa sets target CPU utilization to 50%
-        run: |
-          TARGET_CPU=`kubectl describe hpa nginx | grep 'Metrics' -A 1 | grep '/ 50%' | grep '50%' -o`
-          if [ "$TARGET_CPU" == "50%" ]; then
-            echo "✅ Target CPU utilization for hpa is correct"
+          eval "$SECOND_COPY_CMD"
+          THIRD=`ls | grep foo.log`
+          if [ "$THIRD" == "foo.log" ]; then
+            echo "✅ Copying /tmp/foo.log from Pod to local machine succeeded"
           else
-            echo "❌ Target CPU utilization for hpa is incorrect"
-          fi
-
-      - name: CHALLENGE - Check if service can connect to pod in deployment
-        run: |
-          kubectl apply -f ./cyber-monday/nginx-deploy.yml
-          sleep 10
-          kubectl apply -f ./cyber-monday/nginx-service.yml
-          curl $(minikube service nginx --url)
-          RESULT=`echo $?`
-          if [ "$RESULT" == "0" ]; then
-            echo "✅ Service is correct"
-          else
-            echo "❌ Service is incorrect"
+            echo "❌ Copying /tmp/foo.log from Pod to local machine failed"
           fi

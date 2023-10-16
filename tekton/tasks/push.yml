@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: push
+spec:
+  params:
+    - name: IMAGE_NAME
+      type: string
+      description: "Name of the Docker image to build and push"
+    - name: DOCKERFILE_PATH
+      type: string
+      description: "Path to the Dockerfile for the image"
+    - name: CONTEXT_PATH
+      type: string
+      description: "Path to the build context (source code)"
+    - name: CONTAINER_REGISTRY
+      type: string
+      description: "Container registry URL (e.g., registry.example.com)"
+    - name: REGISTRY_USERNAME
+      type: string
+      description: "Username for the container registry"
+    - name: REGISTRY_PASSWORD
+      type: string
+      description: "Password for the container registry"
+  steps:
+    - name: push
+      image: docker:20  # Use a Docker-in-Docker (DinD) image for Docker operations
+      workingDir: /workspace/source
+      script: |
+        # Mocking up pushing up an image
+        echo "NOTE: FOR CHALLENGE EXERCISE ONLY"
+        echo "==========================================="
+        echo "This task does not push anything to the Docker's Container Registry"
+        echo "If you wish to do so, add the extension to minikube: https://minikube.sigs.k8s.io/docs/handbook/registry/"
+        echo "And modify the password, username, and registry links in the build-push-deploy.yml Pipeline"
+        echo "If you wish the automate the push of a real, existing repo, also change the REPO_URL in build.yml and ensure a Dockerfile is present at its root"
+        echo "Afterwards edit the `nginx-deployment.yml` file to point to your image instead of the nginx default"
+        echo "==========================================="
+        echo "Credentials"
+        echo "==========================================="
+        echo "${REGISTRY_PASSWORD}"
+        echo "${REGISTRY_USERNAME}" 
+        echo "${CONTAINER_REGISTRY}" 
+
+        # Set up Docker authentication to the container registry
+        # echo "${REGISTRY_PASSWORD}" | docker login -u "${REGISTRY_USERNAME}" --password-stdin "${CONTAINER_REGISTRY}"
+
+        # Build the Docker image and tag it with the desired name and version
+        # docker build -t "${IMAGE_NAME}" -f "${DOCKERFILE_PATH}" "${CONTEXT_PATH}"
+
+        # Push the Docker image to the container registry
+        # docker push "${IMAGE_NAME}"
