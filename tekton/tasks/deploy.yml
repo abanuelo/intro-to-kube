@@ -4,6 +4,8 @@ metadata:
   name: deploy
 spec:
   params:
+    - name: REPO_URL
+      type: string
     - name: NAMESPACE
       type: string
     - name: IMAGE

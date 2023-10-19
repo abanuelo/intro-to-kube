@@ -7,7 +7,7 @@ spec:
     # TODO:
     # Add reference to the build, push, and deploy tasks
     # 1. For the build task add these env variables
-    #   - REPO URL = https://github.com/expressjs/express.git
+    #   - REPO_URL = https://github.com/expressjs/express.git
     # 2. For the push task add these env variables
     #   - IMAGE_NAME = nginx:latest
     #   - DOCKERFILE_PATH = /workspace/source
@@ -16,5 +16,6 @@ spec:
     #   - REGISTRY_USERNAME = Bob
     #   - REGISTRY_PASSWORD = password1234
     # 3. For the deploy task add these env variables:
+    #   - REPO_URL = https://github.com/abanuelo/intro-to-kube.git
     #   - NAMESPACE = default
     #   - IMAGE: nginx:latest
