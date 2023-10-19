@@ -2,18 +2,26 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: Developer
-  namespace: dev # TODO: Re-run this file with other necessary ns
+  namespace: staging # TODO: Re-run this file with other necessary ns
 rules:
 # TODO:
 # target all resources with full access
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["get", "list", "watch", "create", "update"]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: DeveloperBinding
-  namespace: dev # TODO: Re-run this file with other necessary ns, match with role above
+  namespace: staging # TODO: Re-run this file with other necessary ns, match with role above
 subjects:
 # TODO: add Joey as target user
 # note: this is case sensitive
+  - kind: User
+    name: Joey 
 roleRef:
 # TODO: add target role to Developer
+  kind: Role
+  name: Developer
+  apiGroup: rbac.authorization.k8s.io

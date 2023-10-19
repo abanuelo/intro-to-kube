@@ -45,9 +45,8 @@ jobs:
             echo "❌ Cannot ping pods in namespace-b"
           fi
 
-          C_CONNECT_OUTPUT=`kubectl exec nginx -n namespace-a -- apt update && sudo apt install curl -y && timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
-          CONNECT_TO_C=`echo $C_CONNECT_OUTPUT | grep -oE '\w+$'`
-          if [ "$CONNECT_TO_C" == "52" ]; then
+          C_CONNECT_OUTPUT=`kubectl exec nginx -n namespace-a -- timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
+          if [ "$C_CONNECT_OUTPUT" == "52" ]; then
             echo "✅ Can ping pods in namespace-c"
           else
             echo "❌ Cannot ping pods in namespace-c"
@@ -71,7 +70,7 @@ jobs:
             echo "❌ Cannot ping pods in namespace-a"
           fi
 
-          C_CONNECT_OUTPUT=`kubectl exec nginx -n namespace-b -- apt update && sudo apt install curl -y && timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
+          C_CONNECT_OUTPUT=`kubectl exec nginx -n namespace-b -- timeout 5s curl $POD_C_IP:$POD_C_PORT &>/dev/null; echo $?`
           CONNECT_TO_C=`echo $C_CONNECT_OUTPUT | grep -oE '\w+$'`
           if [ "$CONNECT_TO_C" != "52" ]; then
             echo "✅ Cannot ping pods in namespace-c"
