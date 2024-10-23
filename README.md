@@ -1,5 +1,4 @@
 # Kubernetes: Managing Containers at Scale
-### Author: Armando Banuelos
 
 ## Background
 
