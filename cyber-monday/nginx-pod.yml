@@ -1,6 +1,13 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx-pod
+  name: just-a-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+    
   # TODO: 
   # - Add your nginx-pod spec with label `just-a-pod` and containerPort 80

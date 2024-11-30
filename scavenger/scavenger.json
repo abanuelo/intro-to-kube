@@ -1,12 +1,12 @@
 {
   "mark-i": {
-    "0": "Put answer here",
-    "1": "Put answer here",
-    "2": "Put answer here",
-    "3": "Put answer here",
-    "4": "Put answer here",
-    "5": "Put answer here"
+    "0": "5",
+    "1": "5",
+    "2": "1",
+    "3": "2",
+    "4": "3",
+    "5": "3"
   },
-  "mark-ii": { "6": "Put answer here", "7": "Put answer here" },
-  "mark-iii": { "8": "Put answer here", "9": "Put answer here" }
+  "mark-ii": { "6": "CrashLoopBackOff", "7": "node.kubernetes.io/not-ready:NoExecute op=Exist" },
+  "mark-iii": { "8": "ImagePullBackOff", "9": "node.kubernetes.io/not-ready:NoExecute op=Exist" }
 }
