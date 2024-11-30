@@ -1,11 +1,1 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-config
-  labels:
-    app: postgres
-data:
-  # TODO: Configure the following values
-  # POSTGRES_DB as postgresdb
-  # POSTGRES_USER as admin
-  # POSTGRES_PASSWORD as psltest
+git
