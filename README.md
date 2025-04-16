@@ -2,7 +2,7 @@
 
 ## Background
 
-This repo will contain examples to learn:
+This repo will contain examples to learn from:
 
 - Creating shared volume mounts for Databases
 - Creating highly available (HA) websites using Deployments
