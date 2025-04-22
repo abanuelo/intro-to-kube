@@ -1,12 +1,12 @@
 {
   "mark-i": {
-    "0": "Put answer here",
-    "1": "Put answer here",
-    "2": "Put answer here",
-    "3": "Put answer here",
-    "4": "Put answer here",
-    "5": "Put answer here"
+    "0": "5",
+    "1": "5",
+    "2": "1",
+    "3": "2",
+    "4": "1",
+    "5": "3"
   },
-  "mark-ii": { "6": "Put answer here", "7": "Put answer here" },
-  "mark-iii": { "8": "Put answer here", "9": "Put answer here" }
+  "mark-ii": { "6": "Database is uninitialized and superuser password is not specified. Specify POSTGRES_PASSWORD to a non-empty value for the superuser.", "7": "Error: Database is uninitialized and superuser password is not specified. You must specify POSTGRES_PASSWORD to a non-empty value for the superuser. For example, \"-e POSTGRES_PASSWORD=password\" on \"docker run\"." },
+  "mark-iii": { "8": "Added the environment POSTGRES_PASSWORD with value specified.", "9": "Corrected the image name from nginz to nginx in nginx-pod.yml" }
 }
