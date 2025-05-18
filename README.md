@@ -4,7 +4,7 @@
 
 This repo will contain examples to learn from:
 
-- Creating shared volume mounts for Databases
+- Creating a shared volume mounts for Databases
 - Creating highly available (HA) websites using Deployments
 - Deploying basic Services to communicate with HA pods
 - Calico Networking for Pod-to-Pod communication
