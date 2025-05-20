@@ -16,7 +16,7 @@ We will be using [minikube](https://minikube.sigs.k8s.io/docs/) on [GitHub Codes
 
 ## Outline
 
-- Week 1
+- Week 1.0
 
   a. **[Scavenger Hunt (Optional)](https://uplimit.com/course/kubernetes-managing-containers-at-scale/v2/enrollment/enrollment_clj4nmkr201xv12aw259t4xtw/module/scavenger-hunt)** - helps us explore our minikube environment and how to use the `kubectl` tool.
 
